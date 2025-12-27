@@ -88,14 +88,54 @@ public class CitiesRegionalPlugin : BaseUnityPlugin
 
     private void OnDestroy()
     {
+        if (!_isInitialized)
+        {
+            return; // Already unloaded or never initialized
+        }
+
         Logging.LogInfo("Cities Regional unloading...");
 
-        _regionalManager?.Dispose();
-        _regionalManager = null;
-        _discovery = null;
-        _isInitialized = false;
+        try
+        {
+            // Dispose Regional Manager (stops sync loop, cleans up resources)
+            if (_regionalManager != null)
+            {
+                _regionalManager.Dispose();
+                _regionalManager = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            Logging.LogError($"Error disposing Regional Manager: {ex.Message}");
+        }
 
-        _harmony?.UnpatchSelf();
+        try
+        {
+            // Clear discovery bootstrap reference
+            _discovery = null;
+        }
+        catch (Exception ex)
+        {
+            Logging.LogError($"Error cleaning up discovery bootstrap: {ex.Message}");
+        }
+
+        try
+        {
+            // Unpatch Harmony patches
+            _harmony?.UnpatchSelf();
+            _harmony = null;
+        }
+        catch (Exception ex)
+        {
+            Logging.LogError($"Error unpatching Harmony: {ex.Message}");
+        }
+
+        // Clear UI reference
+        _ui = null;
+
+        // Reset initialization state
+        _isInitialized = false;
+        Instance = null;
 
         Logging.LogInfo("Cities Regional unloaded.");
     }
