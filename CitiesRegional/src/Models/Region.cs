@@ -95,6 +95,15 @@ public class Region
     /// </summary>
     public bool AddCity(RegionalCityData city)
     {
+        if (city == null)
+            return false;
+        
+        if (string.IsNullOrEmpty(city.CityId))
+            return false;
+        
+        if (Cities == null)
+            return false;
+        
         if (Cities.Count >= MaxCities)
             return false;
 
@@ -120,6 +129,12 @@ public class Region
     /// </summary>
     public bool RemoveCity(string cityId)
     {
+        if (string.IsNullOrEmpty(cityId))
+            return false;
+        
+        if (Cities == null || Connections == null)
+            return false;
+        
         var city = Cities.FirstOrDefault(c => c.CityId == cityId);
         if (city == null)
             return false;
@@ -146,6 +161,15 @@ public class Region
     /// </summary>
     public void UpdateCity(RegionalCityData updatedCity)
     {
+        if (updatedCity == null)
+            return;
+        
+        if (string.IsNullOrEmpty(updatedCity.CityId))
+            return;
+        
+        if (Cities == null)
+            return;
+        
         var existing = Cities.FirstOrDefault(c => c.CityId == updatedCity.CityId);
         if (existing != null)
         {
@@ -165,6 +189,12 @@ public class Region
     /// </summary>
     public RegionalCityData? GetCity(string cityId)
     {
+        if (string.IsNullOrEmpty(cityId))
+            return null;
+        
+        if (Cities == null)
+            return null;
+        
         return Cities.FirstOrDefault(c => c.CityId == cityId);
     }
 
@@ -173,6 +203,15 @@ public class Region
     /// </summary>
     public bool AddConnection(RegionalConnection connection)
     {
+        if (connection == null)
+            return false;
+        
+        if (string.IsNullOrEmpty(connection.FromCityId) || string.IsNullOrEmpty(connection.ToCityId))
+            return false;
+        
+        if (Cities == null || Connections == null)
+            return false;
+        
         // Validate cities exist
         if (!Cities.Any(c => c.CityId == connection.FromCityId) ||
             !Cities.Any(c => c.CityId == connection.ToCityId))
@@ -205,6 +244,12 @@ public class Region
     /// </summary>
     public RegionalConnection? GetConnection(string cityId1, string cityId2)
     {
+        if (string.IsNullOrEmpty(cityId1) || string.IsNullOrEmpty(cityId2))
+            return null;
+        
+        if (Connections == null)
+            return null;
+        
         return Connections.FirstOrDefault(c =>
             (c.FromCityId == cityId1 && c.ToCityId == cityId2) ||
             (c.FromCityId == cityId2 && c.ToCityId == cityId1));
