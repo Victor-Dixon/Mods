@@ -223,9 +223,12 @@ data.Population = popSystem.TotalPopulation;
 
 ## 📚 Documentation
 
+- **[PROJECT_STATUS_SUMMARY.md](PROJECT_STATUS_SUMMARY.md)** - ⭐ Quick project status overview
 - **[INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md)** - Detailed installation instructions
+- **[USER_GUIDE.md](USER_GUIDE.md)** - End-user documentation
+- **[API_DOCUMENTATION.md](API_DOCUMENTATION.md)** - Developer API reference
 - **[GOOEE_API_TESTING_GUIDE.md](GOOEE_API_TESTING_GUIDE.md)** - UI testing guide
-- **[MASTER_TASK_LOG.md](MASTER_TASK_LOG.md)** - Development status and tasks
+- **[MASTER_TASK_LOG.md](MASTER_TASK_LOG.md)** - Detailed development tasks
 - **[MISSION_BRIEFING.md](MISSION_BRIEFING.md)** - Project architecture and design
 - **[UI_002_ACTIVATION_CHECKLIST.md](UI_002_ACTIVATION_CHECKLIST.md)** - UI activation steps
 
