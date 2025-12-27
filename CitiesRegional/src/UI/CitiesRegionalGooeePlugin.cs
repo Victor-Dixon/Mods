@@ -4,7 +4,6 @@ using CitiesRegional.Services;
 using CitiesRegional.Models;
 using CitiesRegional.UI.Panels;
 using CitiesRegional.UI.Components;
-using static CitiesRegional.PluginInfo;
 
 namespace CitiesRegional.UI;
 
@@ -28,7 +27,7 @@ namespace CitiesRegional.UI;
 using Gooee;
 using Gooee.Plugins;
 
-[BepInPlugin(PLUGIN_GUID + ".UI", PLUGIN_NAME + " UI", PLUGIN_VERSION)]
+[BepInPlugin(PluginInfo.PLUGIN_GUID + ".UI", PluginInfo.PLUGIN_NAME + " UI", PluginInfo.PLUGIN_VERSION)]
 [BepInDependency("Cities2Modding-Gooee-1.1.5")]
 public class CitiesRegionalGooeePlugin : GooeePlugin
 {
@@ -72,7 +71,7 @@ public class CitiesRegionalGooeePlugin : GooeePlugin
 // ============================================
 
 // Placeholder implementation until Gooee API is verified in-game
-[BepInPlugin(PLUGIN_GUID + ".UI", PLUGIN_NAME + " UI", PLUGIN_VERSION)]
+[BepInPlugin(PluginInfo.PLUGIN_GUID + ".UI", PluginInfo.PLUGIN_NAME + " UI", PluginInfo.PLUGIN_VERSION)]
 public class CitiesRegionalGooeePlugin : BepInEx.BaseUnityPlugin
 {
     private RegionalManager? _regionalManager;
