@@ -84,7 +84,7 @@ public class RegionPanel
                 FromCityId = c.FromCityId,
                 ToCityId = c.ToCityId,
                 ConnectionType = c.Type.ToString(),
-                Status = "Active" // TODO: Determine connection status from RegionalConnection or RegionalManager
+                Status = DetermineConnectionStatus(c)
             }).ToList()
         };
     }
@@ -156,6 +156,24 @@ public class RegionPanel
             CitiesRegional.Logging.LogError($"Error joining region: {ex.Message}");
             return false;
         }
+    }
+    
+    /// <summary>
+    /// Determine connection status based on RegionalConnection properties
+    /// </summary>
+    private string DetermineConnectionStatus(RegionalConnection connection)
+    {
+        if (connection.IsCongested)
+        {
+            return "Congested";
+        }
+        
+        if (connection.UsagePercent > 0)
+        {
+            return "Active";
+        }
+        
+        return "Idle";
     }
     
     /// <summary>

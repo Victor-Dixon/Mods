@@ -1,13 +1,19 @@
 {
   "agent": "Agent-8",
   "project": "CitiesRegional - Regional Multiplayer Mod for CS2",
-  "last_updated": "2025-12-27T19:55:00.000000Z",
+  "last_updated": "2025-12-27T20:05:00.000000Z",
   "fsm_state": "ACTIVE",
   "status": "active",
   "current_phase": "Phase 3: UI Framework Setup",
   "completion_percentage": 83,
-  "current_task": "RegionPanel region management implementation",
+  "current_task": "RegionPanel connection status improvement",
   "recent_work": [
+    {
+      "date": "2025-12-27",
+      "task": "RegionPanel connection status improvement",
+      "status": "complete",
+      "details": "Implemented DetermineConnectionStatus method in RegionPanel to calculate connection status from RegionalConnection properties (Congested if UsagePercent > 85%, Active if UsagePercent > 0%, Idle otherwise). Removed TODO comment and replaced hardcoded 'Active' status with dynamic calculation."
+    },
     {
       "date": "2025-12-27",
       "task": "RegionPanel region management implementation",

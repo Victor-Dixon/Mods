@@ -339,3 +339,23 @@
 **Build:** ✅ Success after restoration  
 **Next:** Monitor for file deletion issue, continue code improvements
 
+---
+
+## 📝 Swarm Pulse Update (2025-12-27 20:05)
+
+**Duration Since Last Update:** ~10 minutes  
+**Task:** RegionPanel connection status improvement
+
+**Actions:**
+- Implemented `DetermineConnectionStatus()` method in RegionPanel
+- Status calculation based on RegionalConnection properties:
+  - "Congested" if UsagePercent > 85% (IsCongested = true)
+  - "Active" if UsagePercent > 0%
+  - "Idle" if UsagePercent == 0%
+- Removed TODO comment and replaced hardcoded "Active" status
+- Verified build succeeds (0 errors)
+
+**Commits:** `[latest]` - RegionPanel connection status improvement  
+**Build:** ✅ Success  
+**Next:** Continue identifying and addressing code improvements while waiting for UI-001
+
