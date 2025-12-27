@@ -359,3 +359,25 @@
 **Build:** ✅ Success  
 **Next:** Continue identifying and addressing code improvements while waiting for UI-001
 
+---
+
+## 📝 Swarm Pulse Update (2025-12-27 20:15)
+
+**Duration Since Last Update:** ~10 minutes  
+**Task:** RegionalEffectsApplicator effect reversal implementation
+
+**Actions:**
+- Implemented `ReverseEffect()` method with full reversal logic:
+  - TreasuryChange: Apply negative amount
+  - Export: Add resource back (reverse subtraction)
+  - Import: Subtract resource (reverse addition)
+  - WorkerChange: Apply negative amount
+  - Modifier: Logged as complex (needs original value tracking)
+- Added `ReverseResourceEffect()` helper method for resource reversals
+- Uses same reflection-based approach as application logic
+- Removed TODO comment
+
+**Commits:** `[latest]` - RegionalEffectsApplicator effect reversal implementation  
+**Build:** ✅ Success (0 errors)  
+**Next:** Continue identifying code improvements or await UI-001 completion
+

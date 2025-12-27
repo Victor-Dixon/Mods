@@ -1,13 +1,19 @@
 {
   "agent": "Agent-8",
   "project": "CitiesRegional - Regional Multiplayer Mod for CS2",
-  "last_updated": "2025-12-27T20:05:00.000000Z",
+  "last_updated": "2025-12-27T20:15:00.000000Z",
   "fsm_state": "ACTIVE",
   "status": "active",
   "current_phase": "Phase 3: UI Framework Setup",
   "completion_percentage": 83,
-  "current_task": "RegionPanel connection status improvement",
+  "current_task": "RegionalEffectsApplicator effect reversal implementation",
   "recent_work": [
+    {
+      "date": "2025-12-27",
+      "task": "RegionalEffectsApplicator effect reversal implementation",
+      "status": "complete",
+      "details": "Implemented ReverseEffect() method to undo applied effects when trade flows end or change. Supports reversal of TreasuryChange (negative amount), Export (add resource back), Import (subtract resource), WorkerChange (negative amount). Added ReverseResourceEffect() helper method. Modifier reversal noted as complex and logged as warning. Removed TODO comment."
+    },
     {
       "date": "2025-12-27",
       "task": "RegionPanel connection status improvement",

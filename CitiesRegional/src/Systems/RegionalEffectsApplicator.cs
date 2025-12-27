@@ -737,10 +737,124 @@ public class RegionalEffectsApplicator
     
     private void ReverseEffect(AppliedEffect effect)
     {
-        // TODO: Reverse the applied effect when trade flow ends
-        // This should undo treasury changes, resource modifications, etc.
-        // Needed for dynamic trade flows that change over time
-        CitiesRegional.Logging.LogDebug($"Reversing effect: {effect.Type}");
+        try
+        {
+            switch (effect.Type)
+            {
+                case "TreasuryChange":
+                    // Reverse treasury change by applying negative amount
+                    ApplyTreasuryChange(-effect.Amount, $"Reversal: {effect.Amount:+#,0;-#,0}");
+                    CitiesRegional.Logging.LogDebug($"Reversed treasury change: {-effect.Amount:+#,0;-#,0}");
+                    break;
+                    
+                case "Export":
+                    // Reverse export by adding back the resource amount
+                    if (!string.IsNullOrEmpty(effect.ResourceType) && Enum.TryParse<ResourceType>(effect.ResourceType, out var exportResourceType))
+                    {
+                        ReverseResourceEffect(exportResourceType, effect.Amount, isExport: true);
+                        CitiesRegional.Logging.LogDebug($"Reversed export: {effect.ResourceType} +{effect.Amount}");
+                    }
+                    break;
+                    
+                case "Import":
+                    // Reverse import by subtracting the resource amount
+                    if (!string.IsNullOrEmpty(effect.ResourceType) && Enum.TryParse<ResourceType>(effect.ResourceType, out var importResourceType))
+                    {
+                        ReverseResourceEffect(importResourceType, effect.Amount, isExport: false);
+                        CitiesRegional.Logging.LogDebug($"Reversed import: {effect.ResourceType} -{effect.Amount}");
+                    }
+                    break;
+                    
+                case "WorkerChange":
+                    // Reverse worker change by applying negative amount
+                    ApplyWorkerChange(-(int)effect.Amount, $"Reversal: {effect.Amount:+#;-#;0}");
+                    CitiesRegional.Logging.LogDebug($"Reversed worker change: {-effect.Amount:+#;-#;0}");
+                    break;
+                    
+                case "Modifier":
+                    // Modifier reversal is complex - would need to track original stat values
+                    // For now, log that reversal is needed but not implemented
+                    CitiesRegional.Logging.LogWarn($"Modifier reversal not fully implemented for: {effect.ResourceType ?? "unknown"} (amount: {effect.Amount})");
+                    break;
+                    
+                default:
+                    CitiesRegional.Logging.LogWarn($"Unknown effect type for reversal: {effect.Type}");
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            CitiesRegional.Logging.LogError($"Failed to reverse effect {effect.Type}: {ex.Message}");
+        }
+    }
+    
+    /// <summary>
+    /// Reverse a resource effect (export or import)
+    /// </summary>
+    private void ReverseResourceEffect(ResourceType resourceType, float amount, bool isExport)
+    {
+        try
+        {
+            var bridge = CitiesRegional.Systems.CityDataEcsBridgeSystem.Instance;
+            if (bridge == null)
+            {
+                CitiesRegional.Logging.LogWarn("Cannot reverse resource effect: ECS bridge not available");
+                return;
+            }
+            
+            var resourceSystem = bridge.GetCountCityStoredResourceSystem();
+            if (resourceSystem == null)
+            {
+                CitiesRegional.Logging.LogDebug($"Cannot reverse {resourceType} effect: CountCityStoredResourceSystem not found");
+                return;
+            }
+            
+            var systemType = resourceSystem.GetType();
+            var resourceTypeName = resourceType.ToString().ToLowerInvariant();
+            string[] propertyNamePatterns = GetResourcePropertyPatterns(resourceType);
+            
+            bool modified = false;
+            foreach (var pattern in propertyNamePatterns)
+            {
+                var props = systemType.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                foreach (var prop in props)
+                {
+                    var propName = prop.Name.ToLowerInvariant();
+                    if (propName.Contains(pattern) && (propName.Contains("amount") || propName.Contains("count") || propName.Contains("stock")))
+                    {
+                        if (prop.CanRead && prop.CanWrite)
+                        {
+                            try
+                            {
+                                var currentValue = Convert.ToSingle(prop.GetValue(resourceSystem) ?? 0f);
+                                // Reverse: if it was an export (subtracted), add it back; if import (added), subtract it
+                                var adjustment = isExport ? amount : -amount;
+                                var newValue = Math.Max(0, currentValue + adjustment);
+                                prop.SetValue(resourceSystem, newValue);
+                                
+                                CitiesRegional.Logging.LogInfo($"Resource effect reversed: {resourceType} {adjustment:+#;-#;0} (was {currentValue}, now {newValue}) via {prop.Name}");
+                                modified = true;
+                                break;
+                            }
+                            catch (Exception ex)
+                            {
+                                CitiesRegional.Logging.LogDebug($"Could not reverse via {prop.Name}: {ex.Message}");
+                            }
+                        }
+                    }
+                }
+                if (modified) break;
+            }
+            
+            if (!modified)
+            {
+                CitiesRegional.Logging.LogDebug($"Could not reverse {resourceType} effect: No suitable property found");
+            }
+        }
+        catch (Exception ex)
+        {
+            CitiesRegional.Logging.LogError($"Failed to reverse resource effect: {ex.Message}");
+        }
     }
     
     #endregion
