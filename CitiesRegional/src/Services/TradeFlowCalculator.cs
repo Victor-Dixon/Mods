@@ -15,6 +15,21 @@ public class TradeFlowCalculator
     /// </summary>
     public TradeFlowResult CalculateTradeFlows(Region region, float maxTravelTimeMinutes = 60f, float capacityUtilizationLimit = 0.85f)
     {
+        if (region == null)
+        {
+            throw new ArgumentNullException(nameof(region), "Region cannot be null");
+        }
+        
+        if (maxTravelTimeMinutes <= 0)
+        {
+            throw new ArgumentException("MaxTravelTimeMinutes must be greater than 0", nameof(maxTravelTimeMinutes));
+        }
+        
+        if (capacityUtilizationLimit <= 0 || capacityUtilizationLimit > 1)
+        {
+            throw new ArgumentException("CapacityUtilizationLimit must be between 0 and 1", nameof(capacityUtilizationLimit));
+        }
+        
         var startTime = DateTime.UtcNow;
         var flows = region.CalculateTradeFlows(maxTravelTimeMinutes, capacityUtilizationLimit);
         var endTime = DateTime.UtcNow;
@@ -204,6 +219,12 @@ public class TradeFlowCalculator
         
         foreach (var flow in flows)
         {
+            if (flow == null)
+            {
+                errors.Add("Trade flow is null");
+                continue;
+            }
+            
             // Validate city IDs
             if (string.IsNullOrEmpty(flow.FromCityId) || string.IsNullOrEmpty(flow.ToCityId))
             {
