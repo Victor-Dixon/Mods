@@ -534,3 +534,46 @@
 **Tests:** ✅ All passing (61/61)  
 **Next:** Continue code robustness improvements or await UI-001 completion
 
+---
+
+## 🎯 Swarm Pulse - RegionalEffectsApplicator Validation
+
+**Time:** 2025-12-27 21:17 UTC  
+**Duration Since Last Update:** ~6.7 minutes  
+**Task:** RegionalEffectsApplicator parameter validation
+
+### ✅ Actions Executed
+
+1. **Added Parameter Validation to ApplyTradeEffects:**
+   - Null check for `tradeFlows` parameter
+   - Null/empty check for `localCityId` parameter
+   - Null check for individual `TradeFlow` items in foreach loop
+   - Prevents NullReferenceException when iterating or accessing flow properties
+
+2. **Added Parameter Validation to ApplyCommuterEffects:**
+   - Null check for `region` parameter
+   - Null/empty check for `localCityId` parameter
+   - Prevents NullReferenceException when calling `region.GetCity()`
+
+3. **Added Parameter Validation to ApplyServiceEffects:**
+   - Null check for `localCity` parameter
+   - Null checks for `HostedServices` and `UsedServices` collections
+   - Prevents NullReferenceException when iterating over service collections
+
+4. **Added Null Checks to Effect Methods:**
+   - Null check in `ApplyExportEffect` for `flow` parameter
+   - Null check in `ApplyImportEffect` for `flow` parameter
+   - Defensive programming for all effect application methods
+
+### 📦 Commit
+
+**Message:** "RegionalEffectsApplicator: Add comprehensive parameter validation"
+
+**Files Changed:**
+- `src/Systems/RegionalEffectsApplicator.cs` (parameter validation throughout)
+- `status.json` (status update)
+
+**Build:** ✅ Success (0 errors, 0 warnings)  
+**Tests:** ✅ All passing (61/61)  
+**Next:** Continue code robustness improvements or await UI-001 completion
+

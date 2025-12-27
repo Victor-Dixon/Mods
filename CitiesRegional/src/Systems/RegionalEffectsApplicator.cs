@@ -21,11 +21,29 @@ public class RegionalEffectsApplicator
     /// </summary>
     public void ApplyTradeEffects(List<TradeFlow> tradeFlows, string localCityId)
     {
+        if (tradeFlows == null)
+        {
+            CitiesRegional.Logging.LogWarn("ApplyTradeEffects: tradeFlows is null, skipping");
+            return;
+        }
+        
+        if (string.IsNullOrEmpty(localCityId))
+        {
+            CitiesRegional.Logging.LogWarn("ApplyTradeEffects: localCityId is null or empty, skipping");
+            return;
+        }
+        
         float totalRevenue = 0;
         float totalCost = 0;
         
         foreach (var flow in tradeFlows)
         {
+            if (flow == null)
+            {
+                CitiesRegional.Logging.LogWarn("ApplyTradeEffects: encountered null TradeFlow, skipping");
+                continue;
+            }
+            
             if (flow.FromCityId == localCityId)
             {
                 // We are exporting
@@ -54,6 +72,18 @@ public class RegionalEffectsApplicator
     /// </summary>
     public void ApplyCommuterEffects(Region region, string localCityId)
     {
+        if (region == null)
+        {
+            CitiesRegional.Logging.LogWarn("ApplyCommuterEffects: region is null, skipping");
+            return;
+        }
+        
+        if (string.IsNullOrEmpty(localCityId))
+        {
+            CitiesRegional.Logging.LogWarn("ApplyCommuterEffects: localCityId is null or empty, skipping");
+            return;
+        }
+        
         var localCity = region.GetCity(localCityId);
         if (localCity == null) return;
         
@@ -101,21 +131,41 @@ public class RegionalEffectsApplicator
     /// </summary>
     public void ApplyServiceEffects(RegionalCityData localCity)
     {
-        // Apply benefits from services we host
-        foreach (var service in localCity.HostedServices)
+        if (localCity == null)
         {
-            var revenue = CalculateServiceRevenue(service);
-            ApplyTreasuryChange(revenue, $"Service Revenue: {service.Type}");
-            
-            // Host benefits
-            ApplyServiceHostBonus(service);
+            CitiesRegional.Logging.LogWarn("ApplyServiceEffects: localCity is null, skipping");
+            return;
+        }
+        
+        // Apply benefits from services we host
+        if (localCity.HostedServices == null)
+        {
+            CitiesRegional.Logging.LogDebug("ApplyServiceEffects: HostedServices is null, skipping hosted services");
+        }
+        else
+        {
+            foreach (var service in localCity.HostedServices)
+            {
+                var revenue = CalculateServiceRevenue(service);
+                ApplyTreasuryChange(revenue, $"Service Revenue: {service.Type}");
+                
+                // Host benefits
+                ApplyServiceHostBonus(service);
+            }
         }
         
         // Apply benefits (and costs) from services we use
-        foreach (var usage in localCity.UsedServices)
+        if (localCity.UsedServices == null)
         {
-            ApplyTreasuryChange(-usage.WeeklyCost, $"Service Cost: {usage.Type}");
-            ApplyServiceUsageBonus(usage);
+            CitiesRegional.Logging.LogDebug("ApplyServiceEffects: UsedServices is null, skipping used services");
+        }
+        else
+        {
+            foreach (var usage in localCity.UsedServices)
+            {
+                ApplyTreasuryChange(-usage.WeeklyCost, $"Service Cost: {usage.Type}");
+                ApplyServiceUsageBonus(usage);
+            }
         }
     }
     
@@ -123,6 +173,12 @@ public class RegionalEffectsApplicator
     
     private void ApplyExportEffect(TradeFlow flow)
     {
+        if (flow == null)
+        {
+            CitiesRegional.Logging.LogWarn("ApplyExportEffect: flow is null, skipping");
+            return;
+        }
+        
         if (flow.Amount <= 0)
         {
             CitiesRegional.Logging.LogDebug($"Export effect skipped (zero/negative amount): {flow.ResourceType}");
@@ -211,6 +267,12 @@ public class RegionalEffectsApplicator
     
     private void ApplyImportEffect(TradeFlow flow)
     {
+        if (flow == null)
+        {
+            CitiesRegional.Logging.LogWarn("ApplyImportEffect: flow is null, skipping");
+            return;
+        }
+        
         if (flow.Amount <= 0)
         {
             CitiesRegional.Logging.LogDebug($"Import effect skipped (zero/negative amount): {flow.ResourceType}");
