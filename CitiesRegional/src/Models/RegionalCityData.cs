@@ -163,6 +163,9 @@ public class RegionalCityData
     /// </summary>
     public float GetNetTradeBalance(ResourceType resourceType)
     {
+        if (Resources == null)
+            return 0;
+        
         var resource = Resources.Find(r => r.Type == resourceType);
         if (resource == null) return 0;
         
