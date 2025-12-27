@@ -374,7 +374,7 @@
 - [x] User guide created
 - [x] Installation guide created
 - [ ] Troubleshooting guide created (covered in INSTALLATION_GUIDE.md and USER_GUIDE.md)
-- [ ] API documentation updated
+- [x] API documentation updated
 - [ ] Code well-commented
 
 ---
