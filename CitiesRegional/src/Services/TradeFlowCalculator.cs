@@ -217,6 +217,18 @@ public class TradeFlowCalculator
     {
         var errors = new List<string>();
         
+        if (flows == null)
+        {
+            errors.Add("Trade flows list is null");
+            return errors;
+        }
+        
+        if (region == null)
+        {
+            errors.Add("Region is null");
+            return errors;
+        }
+        
         foreach (var flow in flows)
         {
             if (flow == null)
