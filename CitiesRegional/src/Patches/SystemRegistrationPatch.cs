@@ -17,7 +17,7 @@ namespace CitiesRegional.Patches
     public static class SystemRegistrationPatch
     {
         private static bool _systemsRegistered = false;
-        private static Harmony _harmony;
+        private static Harmony? _harmony;
 
         /// <summary>
         /// Apply patches manually. Call from plugin Awake().

@@ -21,7 +21,10 @@ public class CloudRegionalSync : IRegionalSync, IDisposable
     private string? _cityId;
     private string? _authToken;
     
+    // Event for future use when implementing event notifications
+    #pragma warning disable CS0067
     public event Action<RegionalEvent>? OnEventReceived;
+    #pragma warning restore CS0067
     
     public bool IsConnected => !string.IsNullOrEmpty(_regionId);
     
