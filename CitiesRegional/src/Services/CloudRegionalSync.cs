@@ -58,54 +58,137 @@ public class CloudRegionalSync : IRegionalSync, IDisposable
     
     public async Task<bool> ConnectToRegion(string regionCode)
     {
+        if (string.IsNullOrWhiteSpace(regionCode))
+        {
+            CitiesRegional.Logging.LogWarning("Cannot connect: region code is null or empty");
+            return false;
+        }
+        
         try
         {
             var response = await _client.GetAsync($"{_baseUrl}/regions/code/{regionCode}");
             
             if (!response.IsSuccessStatusCode)
             {
-                CitiesRegional.Logging.LogWarning($"Region not found: {regionCode}");
+                var errorContent = await response.Content.ReadAsStringAsync();
+                CitiesRegional.Logging.LogWarning($"Region not found: {regionCode} (HTTP {response.StatusCode})");
+                if (!string.IsNullOrEmpty(errorContent))
+                {
+                    CitiesRegional.Logging.LogDebug($"Server response: {errorContent}");
+                }
                 return false;
             }
             
             var json = await response.Content.ReadAsStringAsync();
+            if (string.IsNullOrEmpty(json))
+            {
+                CitiesRegional.Logging.LogWarning($"Empty response when connecting to region: {regionCode}");
+                return false;
+            }
+            
             var region = JsonConvert.DeserializeObject<Region>(json);
             
             if (region == null)
+            {
+                CitiesRegional.Logging.LogWarning($"Failed to deserialize region data for code: {regionCode}");
                 return false;
+            }
+            
+            if (string.IsNullOrEmpty(region.RegionId))
+            {
+                CitiesRegional.Logging.LogWarning($"Region has no ID: {regionCode}");
+                return false;
+            }
                 
             _regionId = region.RegionId;
             
-            CitiesRegional.Logging.LogInfo($"Connected to region: {region.RegionName}");
+            CitiesRegional.Logging.LogInfo($"Connected to region: {region.RegionName} ({region.RegionCode})");
             return true;
+        }
+        catch (HttpRequestException ex)
+        {
+            CitiesRegional.Logging.LogError($"Network error connecting to region {regionCode}: {ex.Message}");
+            return false;
+        }
+        catch (JsonException ex)
+        {
+            CitiesRegional.Logging.LogError($"JSON parsing error connecting to region {regionCode}: {ex.Message}");
+            return false;
         }
         catch (Exception ex)
         {
-            CitiesRegional.Logging.LogError($"Connection failed: {ex.Message}");
+            CitiesRegional.Logging.LogError($"Connection failed for region {regionCode}: {ex.Message}");
             return false;
         }
     }
     
     public async Task<Region> CreateRegion(string name, int maxCities)
     {
-        var request = new
+        if (string.IsNullOrWhiteSpace(name))
         {
-            name = name,
-            maxCities = maxCities
-        };
+            throw new ArgumentException("Region name cannot be null or empty", nameof(name));
+        }
         
-        var json = JsonConvert.SerializeObject(request);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        if (maxCities < 2 || maxCities > 20)
+        {
+            throw new ArgumentException("Max cities must be between 2 and 20", nameof(maxCities));
+        }
         
-        var response = await _client.PostAsync($"{_baseUrl}/regions", content);
-        response.EnsureSuccessStatusCode();
-        
-        var responseJson = await response.Content.ReadAsStringAsync();
-        var region = JsonConvert.DeserializeObject<Region>(responseJson)!;
-        
-        _regionId = region.RegionId;
-        
-        return region;
+        try
+        {
+            var request = new
+            {
+                name = name.Trim(),
+                maxCities = maxCities
+            };
+            
+            var json = JsonConvert.SerializeObject(request);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            
+            var response = await _client.PostAsync($"{_baseUrl}/regions", content);
+            
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                var errorMsg = $"Failed to create region (HTTP {response.StatusCode})";
+                if (!string.IsNullOrEmpty(errorContent))
+                {
+                    errorMsg += $": {errorContent}";
+                }
+                throw new HttpRequestException(errorMsg);
+            }
+            
+            var responseJson = await response.Content.ReadAsStringAsync();
+            if (string.IsNullOrEmpty(responseJson))
+            {
+                throw new InvalidOperationException("Server returned empty response when creating region");
+            }
+            
+            var region = JsonConvert.DeserializeObject<Region>(responseJson);
+            if (region == null)
+            {
+                throw new InvalidOperationException("Failed to deserialize region from server response");
+            }
+            
+            if (string.IsNullOrEmpty(region.RegionId))
+            {
+                throw new InvalidOperationException("Created region has no ID");
+            }
+            
+            _regionId = region.RegionId;
+            
+            CitiesRegional.Logging.LogInfo($"Created region: {region.RegionName} ({region.RegionCode})");
+            return region;
+        }
+        catch (HttpRequestException)
+        {
+            throw; // Re-throw HTTP exceptions
+        }
+        catch (JsonException ex)
+        {
+            CitiesRegional.Logging.LogError($"JSON parsing error creating region: {ex.Message}");
+            throw new InvalidOperationException("Failed to parse server response", ex);
+        }
     }
     
     public async Task LeaveRegion()
@@ -134,36 +217,95 @@ public class CloudRegionalSync : IRegionalSync, IDisposable
     {
         if (_regionId == null)
             throw new InvalidOperationException("Not connected to a region");
+        
+        if (cityData == null)
+            throw new ArgumentNullException(nameof(cityData));
+        
+        if (string.IsNullOrEmpty(cityData.CityId))
+            throw new ArgumentException("City ID cannot be null or empty", nameof(cityData));
+        
+        try
+        {
+            _cityId = cityData.CityId;
             
-        _cityId = cityData.CityId;
-        
-        var json = JsonConvert.SerializeObject(cityData);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-        
-        var response = await _client.PutAsync(
-            $"{_baseUrl}/regions/{_regionId}/cities/{cityData.CityId}", 
-            content
-        );
-        
-        response.EnsureSuccessStatusCode();
-        
-        CitiesRegional.Logging.LogDebug($"Pushed city data: {cityData.CityName}");
+            var json = JsonConvert.SerializeObject(cityData);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            
+            var response = await _client.PutAsync(
+                $"{_baseUrl}/regions/{_regionId}/cities/{cityData.CityId}", 
+                content
+            );
+            
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                var errorMsg = $"Failed to push city data (HTTP {response.StatusCode})";
+                if (!string.IsNullOrEmpty(errorContent))
+                {
+                    errorMsg += $": {errorContent}";
+                }
+                throw new HttpRequestException(errorMsg);
+            }
+            
+            CitiesRegional.Logging.LogDebug($"Pushed city data: {cityData.CityName} ({cityData.CityId})");
+        }
+        catch (HttpRequestException)
+        {
+            throw; // Re-throw HTTP exceptions
+        }
+        catch (JsonException ex)
+        {
+            CitiesRegional.Logging.LogError($"JSON serialization error pushing city data: {ex.Message}");
+            throw new InvalidOperationException("Failed to serialize city data", ex);
+        }
     }
     
     public async Task<List<RegionalCityData>> PullRegionData()
     {
         if (_regionId == null)
             throw new InvalidOperationException("Not connected to a region");
-            
-        var response = await _client.GetAsync($"{_baseUrl}/regions/{_regionId}/cities");
-        response.EnsureSuccessStatusCode();
         
-        var json = await response.Content.ReadAsStringAsync();
-        var cities = JsonConvert.DeserializeObject<List<RegionalCityData>>(json) 
-            ?? new List<RegionalCityData>();
+        try
+        {
+            var response = await _client.GetAsync($"{_baseUrl}/regions/{_regionId}/cities");
             
-        CitiesRegional.Logging.LogDebug($"Pulled {cities.Count} cities from region");
-        return cities;
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                var errorMsg = $"Failed to pull region data (HTTP {response.StatusCode})";
+                if (!string.IsNullOrEmpty(errorContent))
+                {
+                    errorMsg += $": {errorContent}";
+                }
+                throw new HttpRequestException(errorMsg);
+            }
+            
+            var json = await response.Content.ReadAsStringAsync();
+            if (string.IsNullOrEmpty(json))
+            {
+                CitiesRegional.Logging.LogWarning("Server returned empty response when pulling region data");
+                return new List<RegionalCityData>();
+            }
+            
+            var cities = JsonConvert.DeserializeObject<List<RegionalCityData>>(json);
+            if (cities == null)
+            {
+                CitiesRegional.Logging.LogWarning("Failed to deserialize region data, returning empty list");
+                return new List<RegionalCityData>();
+            }
+            
+            CitiesRegional.Logging.LogDebug($"Pulled {cities.Count} cities from region");
+            return cities;
+        }
+        catch (HttpRequestException)
+        {
+            throw; // Re-throw HTTP exceptions
+        }
+        catch (JsonException ex)
+        {
+            CitiesRegional.Logging.LogError($"JSON parsing error pulling region data: {ex.Message}");
+            throw new InvalidOperationException("Failed to parse region data from server", ex);
+        }
     }
     
     #endregion
