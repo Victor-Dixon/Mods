@@ -33,7 +33,7 @@ namespace CitiesRegional.Patches
                     "OnGameLoadingComplete",
                     BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                 
-                if (originalMethod != null)
+                if (originalMethod != null && _harmony != null)
                 {
                     var postfix = typeof(SystemRegistrationPatch).GetMethod(
                         nameof(AudioManager_Postfix),
@@ -52,7 +52,7 @@ namespace CitiesRegional.Patches
                     "OnCreate",
                     BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                 
-                if (updateMethod != null)
+                if (updateMethod != null && _harmony != null)
                 {
                     var postfix2 = typeof(SystemRegistrationPatch).GetMethod(
                         nameof(UpdateSystem_Postfix),

@@ -4,6 +4,7 @@ using CitiesRegional.Services;
 using CitiesRegional.Models;
 using CitiesRegional.UI.Panels;
 using CitiesRegional.UI.Components;
+using static CitiesRegional.PluginInfo;
 
 namespace CitiesRegional.UI;
 
