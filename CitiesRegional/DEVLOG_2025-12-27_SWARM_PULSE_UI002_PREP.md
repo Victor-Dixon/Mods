@@ -479,3 +479,25 @@
 **Build:** ✅ Success (0 errors, 0 warnings)  
 **Next:** Continue identifying code improvements or await UI-001 completion
 
+---
+
+## 📝 Swarm Pulse Update (2025-12-27 20:59)
+
+**Duration Since Last Update:** ~7 minutes  
+**Task:** TradeFlowCalculator input validation improvements (completed)
+
+**Actions:**
+- Added comprehensive input validation to `CalculateTradeFlows()`:
+  - Null check for region parameter (throws ArgumentNullException)
+  - Validation for maxTravelTimeMinutes > 0
+  - Validation for capacityUtilizationLimit between 0 and 1
+- Added validation to `ValidateTradeFlows()`:
+  - Null check for flows list (returns error list)
+  - Null check for region parameter (returns error list)
+  - Null check for individual flow items (already present)
+- Prevents NullReferenceException and invalid parameter errors at runtime
+
+**Commits:** `549bfe3` - TradeFlowCalculator input validation improvements  
+**Build:** ✅ Success (0 errors, 0 warnings)  
+**Next:** Continue identifying code improvements or await UI-001 completion
+
