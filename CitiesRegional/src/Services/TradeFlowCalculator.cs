@@ -56,7 +56,7 @@ public class TradeFlowCalculator
     {
         var stats = new TradeFlowStatistics();
         
-        if (flows.Count == 0)
+        if (flows == null || flows.Count == 0)
         {
             return stats;
         }
