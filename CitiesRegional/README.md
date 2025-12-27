@@ -36,25 +36,45 @@ CitiesRegional/
 
 ## 🚀 Getting Started
 
+### Quick Install
+
+**For Users:**
+1. Download latest release
+2. Extract to `BepInEx/plugins/CitiesRegional/`
+3. Launch CS2
+
+**For Developers:**
+1. Clone repository
+2. Set `CS2_INSTALL` environment variable
+3. Run `dotnet build`
+4. Mod auto-deploys to BepInEx
+
+**📖 Full Installation Guide:** See [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md)
+
 ### Prerequisites
 
-- .NET 6.0 SDK or later
-- Cities: Skylines 2
-- BepInEx 5.x installed in the game
+- **.NET 6.0 SDK or later** (for building from source)
+- **Cities: Skylines 2** installed and updated
+- **BepInEx 5.x** installed in the game directory
+- **Gooee UI Framework** (optional, for UI features - install via Thunderstore)
 
 ### Building the Mod
 
-1. Set the CS2 install path:
+1. **Set the CS2 install path:**
    ```powershell
+   # Windows PowerShell
    $env:CS2_INSTALL = "C:\Program Files (x86)\Steam\steamapps\common\Cities Skylines II"
+   $env:BEPINEX_PLUGINS = "$env:CS2_INSTALL\BepInEx\plugins"
    ```
 
-2. Build the project:
+2. **Build the project:**
    ```bash
-   dotnet build
+   dotnet build --configuration Debug
    ```
 
-3. The mod will be copied to your BepInEx plugins folder.
+3. **Auto-deployment:**
+   - The mod will automatically copy to `BepInEx/plugins/CitiesRegional/` if `BEPINEX_PLUGINS` is set
+   - Or manually copy `bin/Debug/netstandard2.1/CitiesRegional.dll`
 
 ### Running the Server (Optional)
 
@@ -169,15 +189,45 @@ data.Population = popSystem.TotalPopulation;
 4. Share region code with friend
 5. Friend joins with same mod installed
 
+## 📊 Current Status
+
+**Project Completion:** 83%
+
+**Completed:**
+- ✅ Core sync infrastructure
+- ✅ Data models and trade system
+- ✅ Testing framework (61/61 tests passing)
+- ✅ Gooee UI framework preparation
+
+**In Progress:**
+- 🚧 UI-001: GooeePlugin API verification (blocked on game launch)
+
+**Pending:**
+- ⏳ UI panels implementation
+- ⏳ End-to-end integration testing
+- ⏳ Performance optimization
+
+**See [MASTER_TASK_LOG.md](MASTER_TASK_LOG.md) for detailed status.**
+
 ## 📋 TODO
 
-- [ ] Implement actual game system hooks
-- [ ] Add UI panels (Gooee or IMGUI)
+- [x] Core sync infrastructure
+- [x] Trade matching algorithm
+- [x] Testing framework
+- [ ] UI panels (Gooee or alternative)
 - [ ] P2P networking mode (LiteNetLib)
 - [ ] Connection visualization on map
 - [ ] Shared services implementation
 - [ ] Leaderboard UI
 - [ ] Save/load region settings
+
+## 📚 Documentation
+
+- **[INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md)** - Detailed installation instructions
+- **[GOOEE_API_TESTING_GUIDE.md](GOOEE_API_TESTING_GUIDE.md)** - UI testing guide
+- **[MASTER_TASK_LOG.md](MASTER_TASK_LOG.md)** - Development status and tasks
+- **[MISSION_BRIEFING.md](MISSION_BRIEFING.md)** - Project architecture and design
+- **[UI_002_ACTIVATION_CHECKLIST.md](UI_002_ACTIVATION_CHECKLIST.md)** - UI activation steps
 
 ## 📚 References
 
