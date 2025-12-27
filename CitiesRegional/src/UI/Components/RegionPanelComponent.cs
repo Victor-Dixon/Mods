@@ -41,12 +41,13 @@ public class RegionPanelComponent
         
         var data = _panel.GetPanelData();
         
-        // TODO: Implement React component rendering
+        // TODO: Implement React component rendering (blocked on UI-001: GooeePlugin API verification)
         // This will use Gooee's React system to render:
         // - Region info section (Name, Code, CityCount, ConnectionCount)
-        // - Cities list
-        // - Connections list
-        // - Action buttons (Create/Join/Leave)
+        // - Cities list with name, population, status (online/offline)
+        // - Connections list with type, capacity, status
+        // - Action buttons (Create/Join/Leave region)
+        // See UI_002_ACTIVATION_CHECKLIST.md for activation steps
         
         if (data.IsInRegion)
         {

@@ -41,11 +41,12 @@ public class TradeDashboardComponent
         
         var data = _panel.GetDashboardData();
         
-        // TODO: Implement React component rendering
+        // TODO: Implement React component rendering (blocked on UI-001: GooeePlugin API verification)
         // This will use Gooee's React system to render:
         // - Statistics section (TotalValue, Count, NetBalance)
-        // - Active trades list
+        // - Active trades list with resource type, cities, amount, value
         // - Empty state when no trades
+        // See UI_002_ACTIVATION_CHECKLIST.md for activation steps
         
         CitiesRegional.Logging.LogInfo($"TradeDashboardComponent: Rendering {data.ActiveTradesCount} trades, Total Value: ${data.TotalTradeValue:F2}");
     }

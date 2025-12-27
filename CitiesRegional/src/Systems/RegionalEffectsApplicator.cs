@@ -737,7 +737,9 @@ public class RegionalEffectsApplicator
     
     private void ReverseEffect(AppliedEffect effect)
     {
-        // TODO: Reverse the applied effect
+        // TODO: Reverse the applied effect when trade flow ends
+        // This should undo treasury changes, resource modifications, etc.
+        // Needed for dynamic trade flows that change over time
         CitiesRegional.Logging.LogDebug($"Reversing effect: {effect.Type}");
     }
     

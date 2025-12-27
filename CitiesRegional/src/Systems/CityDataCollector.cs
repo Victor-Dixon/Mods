@@ -388,7 +388,9 @@ public class CityDataCollector
     
     private void CollectServicesData(RegionalCityData data)
     {
-        // TODO: Detect regional-capable services in the city
+        // TODO: Detect regional-capable services in the city (airports, universities, hospitals)
+        // This requires scanning game systems for service buildings
+        // Services can be shared across the region for mutual benefit
         data.HostedServices = new List<SharedServiceInfo>();
         data.UsedServices = new List<SharedServiceUsage>();
         data.ConnectionPoints = new List<ConnectionPoint>();
@@ -435,7 +437,9 @@ public class CityDataCollector
     /// </summary>
     private T GetGameValue<T>(string valueName, T defaultValue)
     {
-        // TODO: Implement actual game value reading
+        // TODO: Implement actual game value reading from CS2 game systems
+        // Currently uses placeholder values - replace with real ECS system queries
+        // See CityDataEcsBridgeSystem for examples of real data collection
         // This is where you'd hook into CS2's systems:
         //
         // Example for population:

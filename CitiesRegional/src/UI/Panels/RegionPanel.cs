@@ -75,7 +75,7 @@ public class RegionPanel
                 CityId = c.CityId,
                 CityName = c.CityName,
                 Population = c.Population,
-                Status = "Online" // TODO: Determine actual status
+                Status = "Online" // TODO: Read actual online status from RegionalCityData.IsOnline
             }).ToList(),
             Connections = region.Connections.Select(c => new ConnectionDisplayData
             {
@@ -83,7 +83,7 @@ public class RegionPanel
                 FromCityId = c.FromCityId,
                 ToCityId = c.ToCityId,
                 ConnectionType = c.Type.ToString(),
-                Status = "Active" // TODO: Determine actual status
+                Status = "Active" // TODO: Determine connection status from RegionalConnection or RegionalManager
             }).ToList()
         };
     }
@@ -94,7 +94,9 @@ public class RegionPanel
     public void CreateRegion(string regionName, string regionCode)
     {
         CitiesRegional.Logging.LogInfo($"CreateRegion requested: {regionName} ({regionCode})");
-        // TODO: Implement region creation via RegionalManager
+        // TODO: Implement region creation via RegionalManager.CreateRegion()
+        // Requires: region name, max cities parameter
+        // Returns: Created Region object with region code
     }
     
     /// <summary>
@@ -103,7 +105,9 @@ public class RegionPanel
     public void JoinRegion(string regionCode)
     {
         CitiesRegional.Logging.LogInfo($"JoinRegion requested: {regionCode}");
-        // TODO: Implement region joining via RegionalManager
+        // TODO: Implement region joining via RegionalManager.JoinRegion(regionCode)
+        // Requires: region code string from user input
+        // Returns: bool indicating success/failure
     }
     
     /// <summary>
@@ -112,7 +116,9 @@ public class RegionPanel
     public void LeaveRegion()
     {
         CitiesRegional.Logging.LogInfo("LeaveRegion requested");
-        // TODO: Implement region leaving via RegionalManager
+        // TODO: Implement region leaving via RegionalManager.LeaveRegion()
+        // Clears current region and stops sync loop
+        // Returns: Task (async operation)
     }
 }
 

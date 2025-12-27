@@ -286,7 +286,7 @@ public class CloudRegionalSync : IRegionalSync, IDisposable
         );
     }
     
-    // Note: In a real implementation, you would use WebSockets or 
+    // Note: In a production implementation, consider using WebSockets or 
     // long-polling to receive real-time events.
     // For simplicity, events are pulled during the regular sync cycle.
     
