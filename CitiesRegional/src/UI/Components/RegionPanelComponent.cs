@@ -70,28 +70,37 @@ public class RegionPanelComponent
     /// <summary>
     /// Handle create region action
     /// </summary>
-    public void OnCreateRegion(string regionName, string regionCode)
+    public async void OnCreateRegion(string regionName, int maxCities = 4)
     {
-        _panel?.CreateRegion(regionName, regionCode);
-        Update();
+        if (_panel != null)
+        {
+            await _panel.CreateRegion(regionName, maxCities);
+            Update();
+        }
     }
     
     /// <summary>
     /// Handle join region action
     /// </summary>
-    public void OnJoinRegion(string regionCode)
+    public async void OnJoinRegion(string regionCode)
     {
-        _panel?.JoinRegion(regionCode);
-        Update();
+        if (_panel != null)
+        {
+            await _panel.JoinRegion(regionCode);
+            Update();
+        }
     }
     
     /// <summary>
     /// Handle leave region action
     /// </summary>
-    public void OnLeaveRegion()
+    public async void OnLeaveRegion()
     {
-        _panel?.LeaveRegion();
-        Update();
+        if (_panel != null)
+        {
+            await _panel.LeaveRegion();
+            Update();
+        }
     }
 }
 
