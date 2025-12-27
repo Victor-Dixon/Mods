@@ -174,16 +174,39 @@ public class RegionalManager : IDisposable
     {
         // Sync interval (2 minutes default)
         var syncInterval = TimeSpan.FromSeconds(120);
+        int consecutiveFailures = 0;
+        const int maxConsecutiveFailures = 5;
         
         while (!cancellationToken.IsCancellationRequested)
         {
             try
             {
                 await PerformSync();
+                consecutiveFailures = 0; // Reset on success
             }
             catch (Exception ex)
             {
-                CitiesRegional.Logging.LogError($"Sync error: {ex.Message}");
+                consecutiveFailures++;
+                CitiesRegional.Logging.LogError($"Sync error ({consecutiveFailures}/{maxConsecutiveFailures}): {ex.Message}");
+                
+                // If too many consecutive failures, use exponential backoff
+                if (consecutiveFailures >= maxConsecutiveFailures)
+                {
+                    var backoffDelay = TimeSpan.FromSeconds(Math.Min(300, Math.Pow(2, consecutiveFailures - maxConsecutiveFailures) * 30));
+                    CitiesRegional.Logging.LogWarn($"Too many sync failures, backing off for {backoffDelay.TotalSeconds} seconds");
+                    
+                    try
+                    {
+                        await Task.Delay(backoffDelay, cancellationToken);
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        break;
+                    }
+                    
+                    // Reset after backoff to try again
+                    consecutiveFailures = 0;
+                }
             }
             
             try
@@ -203,41 +226,121 @@ public class RegionalManager : IDisposable
         
         CitiesRegional.Logging.LogDebug("Performing regional sync...");
         
-        // 1. Collect current city data
-        _localCityData = _dataCollector.CollectCurrentData();
-        _localCityData.IsOnline = true;
-        _localCityData.LastSync = DateTime.UtcNow;
-        
-        // 2. Push our data
-        await _syncService.PushCityData(_localCityData);
-        
-        // 3. Pull others' data
-        var cities = await _syncService.PullRegionData();
-        _currentRegion.Cities = cities;
-        
-        // 4. Calculate trade flows with enhanced calculator
-        var tradeCalculator = new TradeFlowCalculator();
-        var tradeResult = tradeCalculator.CalculateTradeFlows(_currentRegion);
-        
-        // Validate trade flows
-        var validationErrors = tradeCalculator.ValidateTradeFlows(tradeResult.Flows, _currentRegion);
-        if (validationErrors.Count > 0)
+        try
         {
-            CitiesRegional.Logging.LogWarn($"Trade flow validation found {validationErrors.Count} errors:");
-            foreach (var error in validationErrors)
+            // 1. Collect current city data
+            _localCityData = _dataCollector.CollectCurrentData();
+            if (_localCityData == null)
             {
-                CitiesRegional.Logging.LogWarn($"  - {error}");
+                CitiesRegional.Logging.LogWarn("Data collection returned null, skipping sync");
+                return;
+            }
+            
+            _localCityData.IsOnline = true;
+            _localCityData.LastSync = DateTime.UtcNow;
+            
+            // 2. Push our data (with retry)
+            await RetryOperationAsync(
+                () => _syncService.PushCityData(_localCityData),
+                "Push city data",
+                maxRetries: 3
+            );
+            
+            // 3. Pull others' data (with retry)
+            var cities = await RetryOperationAsync<List<RegionalCityData>>(
+                () => _syncService.PullRegionData(),
+                "Pull region data",
+                maxRetries: 3
+            );
+            
+            if (cities == null)
+            {
+                CitiesRegional.Logging.LogWarn("Failed to pull region data, skipping trade calculation");
+                return;
+            }
+            
+            _currentRegion.Cities = cities;
+            
+            // 4. Calculate trade flows with enhanced calculator
+            var tradeCalculator = new TradeFlowCalculator();
+            var tradeResult = tradeCalculator.CalculateTradeFlows(_currentRegion);
+            
+            // Validate trade flows
+            var validationErrors = tradeCalculator.ValidateTradeFlows(tradeResult.Flows, _currentRegion);
+            if (validationErrors.Count > 0)
+            {
+                CitiesRegional.Logging.LogWarn($"Trade flow validation found {validationErrors.Count} errors:");
+                foreach (var error in validationErrors)
+                {
+                    CitiesRegional.Logging.LogWarn($"  - {error}");
+                }
+            }
+            
+            // 5. Apply effects to our city
+            _effectsApplicator.ApplyTradeEffects(tradeResult.Flows, _localCityData.CityId);
+            _effectsApplicator.ApplyCommuterEffects(_currentRegion, _localCityData.CityId);
+            
+            _lastSyncTime = DateTime.UtcNow;
+            OnRegionUpdated?.Invoke(_currentRegion);
+            
+            CitiesRegional.Logging.LogDebug($"Sync complete. {cities.Count} cities in region.");
+        }
+        catch (Exception ex)
+        {
+            CitiesRegional.Logging.LogError($"Sync operation failed: {ex.Message}");
+            throw; // Re-throw to be handled by RunSyncLoop
+        }
+    }
+    
+    /// <summary>
+    /// Retry an async operation with exponential backoff (void-returning)
+    /// </summary>
+    private async Task RetryOperationAsync(Func<Task> operation, string operationName, int maxRetries = 3)
+    {
+        int attempt = 0;
+        while (attempt < maxRetries)
+        {
+            try
+            {
+                await operation();
+                return;
+            }
+            catch (Exception ex) when (attempt < maxRetries - 1)
+            {
+                attempt++;
+                var delay = TimeSpan.FromSeconds(Math.Pow(2, attempt - 1)); // Exponential backoff: 1s, 2s, 4s
+                CitiesRegional.Logging.LogWarn($"{operationName} failed (attempt {attempt}/{maxRetries}), retrying in {delay.TotalSeconds}s: {ex.Message}");
+                await Task.Delay(delay);
             }
         }
         
-        // 5. Apply effects to our city
-        _effectsApplicator.ApplyTradeEffects(tradeResult.Flows, _localCityData.CityId);
-        _effectsApplicator.ApplyCommuterEffects(_currentRegion, _localCityData.CityId);
+        // Final attempt - let exception propagate
+        await operation();
+    }
+    
+    /// <summary>
+    /// Retry an async operation with exponential backoff (value-returning)
+    /// </summary>
+    private async Task<T> RetryOperationAsync<T>(Func<Task<T>> operation, string operationName, int maxRetries = 3)
+    {
+        int attempt = 0;
+        while (attempt < maxRetries)
+        {
+            try
+            {
+                return await operation();
+            }
+            catch (Exception ex) when (attempt < maxRetries - 1)
+            {
+                attempt++;
+                var delay = TimeSpan.FromSeconds(Math.Pow(2, attempt - 1)); // Exponential backoff: 1s, 2s, 4s
+                CitiesRegional.Logging.LogWarn($"{operationName} failed (attempt {attempt}/{maxRetries}), retrying in {delay.TotalSeconds}s: {ex.Message}");
+                await Task.Delay(delay);
+            }
+        }
         
-        _lastSyncTime = DateTime.UtcNow;
-        OnRegionUpdated?.Invoke(_currentRegion);
-        
-        CitiesRegional.Logging.LogDebug($"Sync complete. {cities.Count} cities in region.");
+        // Final attempt - let exception propagate
+        return await operation();
     }
     
     /// <summary>
