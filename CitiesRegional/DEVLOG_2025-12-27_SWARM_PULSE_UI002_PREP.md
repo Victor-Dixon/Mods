@@ -381,3 +381,26 @@
 **Build:** ✅ Success (0 errors)  
 **Next:** Continue identifying code improvements or await UI-001 completion
 
+---
+
+## 📝 Swarm Pulse Update (2025-12-27 20:25)
+
+**Duration Since Last Update:** ~10 minutes  
+**Task:** CitiesRegionalPlugin OnDestroy cleanup improvements
+
+**Actions:**
+- Improved `OnDestroy()` method with robust error handling:
+  - Early return if not initialized (prevents double cleanup)
+  - Wrapped each cleanup step in try-catch blocks:
+    - RegionalManager disposal (stops sync loop)
+    - Discovery bootstrap cleanup
+    - Harmony unpatching
+  - Clear UI reference
+  - Reset Instance static to null
+  - Improved error logging for each cleanup step
+- Prevents cleanup failures from cascading and causing crashes
+
+**Commits:** `[latest]` - CitiesRegionalPlugin OnDestroy cleanup improvements  
+**Build:** ✅ Success (0 errors)  
+**Next:** Continue identifying code improvements or await UI-001 completion
+

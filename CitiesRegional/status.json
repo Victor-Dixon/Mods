@@ -1,13 +1,19 @@
 {
   "agent": "Agent-8",
   "project": "CitiesRegional - Regional Multiplayer Mod for CS2",
-  "last_updated": "2025-12-27T20:15:00.000000Z",
+  "last_updated": "2025-12-27T20:25:00.000000Z",
   "fsm_state": "ACTIVE",
   "status": "active",
   "current_phase": "Phase 3: UI Framework Setup",
   "completion_percentage": 83,
-  "current_task": "RegionalEffectsApplicator effect reversal implementation",
+  "current_task": "CitiesRegionalPlugin OnDestroy cleanup improvements",
   "recent_work": [
+    {
+      "date": "2025-12-27",
+      "task": "CitiesRegionalPlugin OnDestroy cleanup improvements",
+      "status": "complete",
+      "details": "Improved OnDestroy() method with better error handling: added early return if not initialized, wrapped each cleanup step in try-catch blocks (RegionalManager disposal, discovery cleanup, Harmony unpatching), clear UI reference, reset Instance to null, improved error logging. Prevents cleanup failures from cascading."
+    },
     {
       "date": "2025-12-27",
       "task": "RegionalEffectsApplicator effect reversal implementation",
