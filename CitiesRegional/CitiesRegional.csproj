@@ -1,0 +1,98 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>CitiesRegional</AssemblyName>
+    <RootNamespace>CitiesRegional</RootNamespace>
+    <Description>Regional multiplayer for Cities: Skylines 2 - Connected cities that trade and cooperate</Description>
+    <Version>0.1.0</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    
+    <!-- Don't try to copy game DLLs to output -->
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    
+    <!-- Don't include nested projects -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    
+    <!-- Suppress version conflict warnings -->
+    <NoWarn>MSB3277</NoWarn>
+  </PropertyGroup>
+  
+  <!-- Include only src folder -->
+  <ItemGroup>
+    <Compile Include="src\**\*.cs" />
+  </ItemGroup>
+
+  <!-- ============================================== -->
+  <!-- NUGET PACKAGES                                -->
+  <!-- ============================================== -->
+  
+  <ItemGroup>
+    <!-- JSON serialization -->
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    
+    <!-- Networking (for P2P mode) -->
+    <PackageReference Include="LiteNetLib" Version="1.2.0" />
+  </ItemGroup>
+  
+  <!-- ============================================== -->
+  <!-- BEPINEX REFERENCES                            -->
+  <!-- ============================================== -->
+  
+  <ItemGroup>
+    <Reference Include="BepInEx">
+      <HintPath>$(CS2_INSTALL)\BepInEx\core\BepInEx.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(CS2_INSTALL)\BepInEx\core\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+  
+  <!-- ============================================== -->
+  <!-- CS2 GAME REFERENCES                           -->
+  <!-- ============================================== -->
+  
+  <ItemGroup>
+    <Reference Include="Game">
+      <HintPath>$(CS2_INSTALL)\Cities2_Data\Managed\Game.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Colossal.Core">
+      <HintPath>$(CS2_INSTALL)\Cities2_Data\Managed\Colossal.Core.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Unity.Entities">
+      <HintPath>$(CS2_INSTALL)\Cities2_Data\Managed\Unity.Entities.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(CS2_INSTALL)\Cities2_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(CS2_INSTALL)\Cities2_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <!-- Gooee UI Framework -->
+    <Reference Include="Gooee">
+      <HintPath>$(CS2_INSTALL)\BepInEx\plugins\Gooee.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- ============================================== -->
+  <!-- AUTO-DEPLOY TO BEPINEX (Debug builds only)    -->
+  <!-- ============================================== -->
+  
+  <Target Name="DeployToBepInEx" AfterTargets="Build" 
+          Condition="'$(Configuration)' == 'Debug' AND Exists('$(BEPINEX_PLUGINS)')">
+    <MakeDir Directories="$(BEPINEX_PLUGINS)\CitiesRegional" />
+    <Copy SourceFiles="$(TargetPath)" 
+          DestinationFolder="$(BEPINEX_PLUGINS)\CitiesRegional\" />
+    <Message Text="Deployed to $(BEPINEX_PLUGINS)\CitiesRegional\" Importance="high" />
+  </Target>
+
+</Project>

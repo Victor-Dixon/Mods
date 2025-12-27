@@ -1,0 +1,72 @@
+{
+  "entry_type": "knowledge_base",
+  "project": "CitiesRegional",
+  "topic": "CS2 Modding - Gooee UI Framework Integration",
+  "date": "2025-12-27",
+  "tags": ["csharp", "unity", "modding", "cities-skylines-2", "bepinex", "gooee", "ui", "react"],
+  
+  "knowledge": {
+    "problem": "How to integrate Gooee UI framework (React-based) into Cities: Skylines 2 mod",
+    "solution": "Layered Architecture: Panel Structures + Component Templates + GooeePlugin",
+    "implementation": {
+      "pattern": "Three-layer structure: Panel (data logic) → Component (rendering template) → GooeePlugin (registration)",
+      "steps": [
+        "1. Create panel structures (TradeDashboardPanel, RegionPanel) with data access logic",
+        "2. Create component templates (TradeDashboardComponent, RegionPanelComponent) with render methods",
+        "3. Initialize panels and components in GooeePlugin placeholder",
+        "4. Test GooeePlugin API in-game following testing guide",
+        "5. Activate GooeePlugin code when API verified (uncomment //ACTIVATE: sections)",
+        "6. Convert component templates to Gooee React components",
+        "7. Register components with Gooee system"
+      ],
+      "code_structure": {
+        "panels": "Panel classes provide data access and formatting (TradeDashboardPanel, RegionPanel)",
+        "components": "Component classes provide rendering structure (TradeDashboardComponent, RegionPanelComponent)",
+        "gooeeplugin": "GooeePlugin initializes panels and components, registers with Gooee when active"
+      }
+    },
+    "key_learnings": [
+      "Separate data logic (panels) from rendering (components) for easier Gooee integration",
+      "Use activation markers (//ACTIVATE:, //PLACEHOLDER:) for conditional code",
+      "Create testing guide before API verification to ensure systematic approach",
+      "Component templates can be created before Gooee API is verified",
+      "Panel structures connect to RegionalManager via CitiesRegionalUI helper"
+    ],
+    "common_pitfalls": [
+      "Mixing data logic with rendering logic (should be separate layers)",
+      "Not creating testing guide before API verification",
+      "Hard-coding property names without checking model definitions",
+      "Not using activation markers for conditional code"
+    ],
+    "best_practices": [
+      "Create panel structures first (data access layer)",
+      "Create component templates second (rendering layer)",
+      "Use clear activation markers for conditional code",
+      "Create comprehensive testing guides before API verification",
+      "Verify build after each layer addition",
+      "Document all structures and their purposes"
+    ]
+  },
+  
+  "references": {
+    "thunderstore": "https://thunderstore.io/c/cities-skylines-ii/p/Cities2Modding/Gooee/",
+    "discord": "Cities 2 Modding Discord",
+    "wiki": "wiki.ciim.dev",
+    "documentation": "GOOEE_API_TESTING_GUIDE.md, GOOEE_API_RESEARCH.md, MASTER_TASK_LOG.md"
+  },
+  
+  "related_entries": [
+    "CS2 Modding - ECS Data Collection Pattern",
+    "CS2 Modding - System Registration Patterns",
+    "CS2 Modding - BepInEx Plugin Structure",
+    "React UI Framework Integration Patterns"
+  ],
+  
+  "status": {
+    "panel_structures": "Complete - TradeDashboardPanel, RegionPanel created",
+    "component_templates": "Complete - TradeDashboardComponent, RegionPanelComponent created",
+    "gooeeplugin": "Placeholder active, activation markers added",
+    "api_verification": "Testing guide ready, waiting for in-game testing",
+    "next_step": "Execute GOOEE_API_TESTING_GUIDE.md when CS2 available"
+  }
+}

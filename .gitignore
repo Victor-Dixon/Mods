@@ -1,0 +1,41 @@
+# Build outputs
+**/bin/
+**/obj/
+**/obj_build/
+**/obj_temp/
+**/*.user
+**/*.suo
+**/*.cache
+**/*.pdb
+**/*.dll
+**/*.exe
+
+# IDE / tooling
+.vs/
+.vscode/
+.idea/
+**/.DS_Store
+
+# Packages
+packages/
+
+# Game installs / mod deploy targets (never commit)
+CS2/
+data/
+BepInEx/
+**/BepInEx/
+
+# Large archives / installers
+*.zip
+*.rar
+*.7z
+
+# Local clones / scratch
+Victor-Dixon-Mods/
+
+# Logs
+**/*.log
+**/LogOutput.log
+**/Player.log
+
+

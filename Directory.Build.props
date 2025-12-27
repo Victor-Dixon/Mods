@@ -1,0 +1,69 @@
+<!--
+  Directory.Build.props - Shared configuration for all projects in D:\mods
+  
+  This file configures:
+  1. NuGet packages to store on D: drive (saves C: space)
+  2. CS2 game path (update this to your installation)
+  3. BepInEx path for mod deployment
+  4. Build output paths on D: drive
+-->
+<Project>
+  
+  <!-- ============================================== -->
+  <!-- BUILD OUTPUT ON D: DRIVE                       -->
+  <!-- Must be set BEFORE SDK is imported!            -->
+  <!-- ============================================== -->
+  
+  <PropertyGroup>
+    <!-- Use separate obj_build folder to avoid IDE lock issues -->
+    <BaseIntermediateOutputPath>$(MSBuildProjectDirectory)\obj_build\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+  
+  <!-- ============================================== -->
+  <!-- CONFIGURE THESE PATHS FOR YOUR SYSTEM         -->
+  <!-- ============================================== -->
+  
+  <PropertyGroup>
+    <!-- 
+      Set your Cities: Skylines 2 installation path here.
+      Common locations:
+      - D:\SteamLibrary\steamapps\common\Cities Skylines II
+      - C:\Program Files (x86)\Steam\steamapps\common\Cities Skylines II
+      - D:\Games\Cities Skylines II
+    -->
+    <CS2_INSTALL>D:\mods\CS2\Cities.Skylines.II.v1.5.3f1\game</CS2_INSTALL>
+    
+    <!-- BepInEx plugins folder (inside CS2 installation) -->
+    <BEPINEX_PLUGINS>$(CS2_INSTALL)\BepInEx\plugins</BEPINEX_PLUGINS>
+  </PropertyGroup>
+  
+  <!-- ============================================== -->
+  <!-- NUGET PACKAGE CACHE ON D: DRIVE               -->
+  <!-- ============================================== -->
+  
+  <PropertyGroup>
+    <!-- Store NuGet packages on D: drive to save C: space -->
+    <RestorePackagesPath>D:\mods\.nuget\packages</RestorePackagesPath>
+    <NuGetPackageRoot>D:\mods\.nuget\packages</NuGetPackageRoot>
+  </PropertyGroup>
+  
+  <!-- ============================================== -->
+  <!-- BUILD OUTPUT CONFIGURATION                    -->
+  <!-- ============================================== -->
+  
+  <PropertyGroup>
+    <!-- Output to D: drive -->
+    <BaseOutputPath>$(MSBuildProjectDirectory)\bin\</BaseOutputPath>
+  </PropertyGroup>
+  
+  <!-- ============================================== -->
+  <!-- COMMON SETTINGS FOR ALL MODS                  -->
+  <!-- ============================================== -->
+  
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  
+</Project>
