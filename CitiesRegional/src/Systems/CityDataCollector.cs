@@ -30,6 +30,20 @@ public class CityDataCollector
     /// </summary>
     public RegionalCityData CollectCurrentData()
     {
+        // Ensure CityId is valid (regenerate if somehow null/empty)
+        if (string.IsNullOrEmpty(_cityId))
+        {
+            CitiesRegional.Logging.LogWarn("[Collector] CityId was null/empty, regenerating...");
+            _cityId = GetOrCreateCityId();
+        }
+        
+        // Ensure PlayerId is valid
+        if (string.IsNullOrEmpty(_playerId))
+        {
+            CitiesRegional.Logging.LogWarn("[Collector] PlayerId was null/empty, regenerating...");
+            _playerId = GetOrCreatePlayerId();
+        }
+        
         var data = new RegionalCityData
         {
             CityId = _cityId,

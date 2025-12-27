@@ -501,3 +501,36 @@
 **Build:** ✅ Success (0 errors, 0 warnings)  
 **Next:** Continue identifying code improvements or await UI-001 completion
 
+---
+
+## 🎯 Swarm Pulse - CityId Validation Improvements
+
+**Time:** 2025-12-27 21:10 UTC  
+**Duration Since Last Update:** ~9.4 minutes  
+**Task:** RegionalManager and CityDataCollector CityId validation
+
+### ✅ Actions Executed
+
+1. **Added CityId Validation in RegionalManager:**
+   - Added null/empty check for `_localCityData.CityId` in `PerformSync()` before using it in effect application
+   - Prevents `NullReferenceException` when accessing `CityId` property
+   - Logs error and skips sync if CityId is invalid
+
+2. **Added Defensive Validation in CityDataCollector:**
+   - Added validation in `CollectCurrentData()` to check if `_cityId` or `_playerId` are null/empty
+   - Regenerates IDs if somehow corrupted or cleared
+   - Ensures CityId is always valid before creating `RegionalCityData` object
+
+### 📦 Commit
+
+**Message:** "RegionalManager: Add CityId validation to prevent null reference errors"
+
+**Files Changed:**
+- `src/Services/RegionalManager.cs` (CityId validation in PerformSync)
+- `src/Systems/CityDataCollector.cs` (defensive CityId/PlayerId validation)
+- `status.json` (status update)
+
+**Build:** ✅ Success (0 errors, 0 warnings)  
+**Tests:** ✅ All passing (61/61)  
+**Next:** Continue code robustness improvements or await UI-001 completion
+

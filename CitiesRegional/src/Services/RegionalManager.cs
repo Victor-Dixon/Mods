@@ -236,6 +236,13 @@ public class RegionalManager : IDisposable
                 return;
             }
             
+            // Validate CityId before proceeding
+            if (string.IsNullOrEmpty(_localCityData.CityId))
+            {
+                CitiesRegional.Logging.LogError("Data collection returned city data with null or empty CityId, skipping sync");
+                return;
+            }
+            
             _localCityData.IsOnline = true;
             _localCityData.LastSync = DateTime.UtcNow;
             
