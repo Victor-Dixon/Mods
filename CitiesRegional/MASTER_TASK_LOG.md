@@ -235,13 +235,15 @@
 - Connect to RegionalManager for real data
 
 **Acceptance Criteria:**
-- [ ] Panel created and functional
+- [x] Backend methods implemented (CreateRegion, JoinRegion, LeaveRegion)
+- [x] Online status display uses IsOnline property
+- [ ] Panel created and functional (blocked on UI-003)
 - [ ] Region info displays correctly
 - [ ] Cities list shows all cities
 - [ ] Connections displayed
 - [ ] Buttons work (create/join/leave)
-- [ ] Connects to RegionalManager
-- [ ] Displays real region data
+- [x] Connects to RegionalManager
+- [ ] Displays real region data (blocked on UI-003)
 
 **Prerequisites:**
 - UI-003 complete (basic panel working)
