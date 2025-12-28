@@ -15,9 +15,11 @@
   <!-- ============================================== -->
   
   <PropertyGroup>
-    <!-- Use separate obj_build folder to avoid IDE lock issues -->
-    <BaseIntermediateOutputPath>$(MSBuildProjectDirectory)\obj_build\</BaseIntermediateOutputPath>
+    <!-- Use standard obj folder for intermediates (avoids permission/lock issues with custom paths) -->
+    <BaseIntermediateOutputPath>$(MSBuildProjectDirectory)\obj\</BaseIntermediateOutputPath>
     <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+    <!-- Exclude non-standard intermediate folders if they exist from previous sessions -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(MSBuildProjectDirectory)\obj_build\**;$(MSBuildProjectDirectory)\obj_temp\**</DefaultItemExcludes>
   </PropertyGroup>
   
   <!-- ============================================== -->

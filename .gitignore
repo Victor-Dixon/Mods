@@ -18,6 +18,7 @@
 
 # Packages
 packages/
+.nuget/
 
 # Game installs / mod deploy targets (never commit)
 CS2/

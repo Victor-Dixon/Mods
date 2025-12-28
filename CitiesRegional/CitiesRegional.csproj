@@ -78,7 +78,7 @@
     </Reference>
     <!-- Gooee UI Framework -->
     <Reference Include="Gooee">
-      <HintPath>$(CS2_INSTALL)\BepInEx\plugins\Gooee.dll</HintPath>
+      <HintPath>$(CS2_INSTALL)\BepInEx\plugins\Gooee\Gooee.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>
