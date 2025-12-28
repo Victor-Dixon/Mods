@@ -1,5 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- Detect if Game Libs are present -->
+  <PropertyGroup>
+      <UseGameLibs Condition="'$(CS2_INSTALL)' == '' OR !Exists('$(CS2_INSTALL)')">false</UseGameLibs>
+      <UseGameLibs Condition="'$(CS2_INSTALL)' != '' AND Exists('$(CS2_INSTALL)')">true</UseGameLibs>
+  </PropertyGroup>
+
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>CitiesRegional</AssemblyName>
@@ -10,7 +16,7 @@
     <LangVersion>latest</LangVersion>
     
     <!-- Don't try to copy game DLLs to output -->
-    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <CopyLocalLockFileAssemblies Condition="'$(UseGameLibs)' == 'true'">false</CopyLocalLockFileAssemblies>
     
     <!-- Don't include nested projects -->
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
@@ -19,9 +25,25 @@
     <NoWarn>MSB3277</NoWarn>
   </PropertyGroup>
   
-  <!-- Include only src folder -->
+  <!-- Include all src folder by default -->
   <ItemGroup>
     <Compile Include="src\**\*.cs" />
+  </ItemGroup>
+
+  <!-- Exclude game dependent files if no game libs -->
+  <ItemGroup Condition="'$(UseGameLibs)' == 'false'">
+    <Compile Remove="src\Bootstrap\**" />
+    <Compile Remove="src\Patches\**" />
+    <Compile Remove="src\Systems\**" />
+    <Compile Remove="src\UI\**" />
+    <Compile Remove="src\CitiesRegionalPlugin.cs" />
+    <Compile Remove="src\Logging.cs" />
+    <Compile Remove="src\Services\RegionalManager.cs" />
+  </ItemGroup>
+  
+  <!-- Include Stub Logging only if game libs are missing -->
+  <ItemGroup Condition="'$(UseGameLibs)' == 'true'">
+      <Compile Remove="src\LoggingStub.cs" />
   </ItemGroup>
 
   <!-- ============================================== -->
@@ -40,7 +62,7 @@
   <!-- BEPINEX REFERENCES                            -->
   <!-- ============================================== -->
   
-  <ItemGroup>
+  <ItemGroup Condition="'$(UseGameLibs)' == 'true'">
     <Reference Include="BepInEx">
       <HintPath>$(CS2_INSTALL)\BepInEx\core\BepInEx.dll</HintPath>
       <Private>false</Private>
@@ -55,7 +77,7 @@
   <!-- CS2 GAME REFERENCES                           -->
   <!-- ============================================== -->
   
-  <ItemGroup>
+  <ItemGroup Condition="'$(UseGameLibs)' == 'true'">
     <Reference Include="Game">
       <HintPath>$(CS2_INSTALL)\Cities2_Data\Managed\Game.dll</HintPath>
       <Private>false</Private>

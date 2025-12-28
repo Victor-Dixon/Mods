@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="LiteNetLib" Version="1.2.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="xunit" Version="2.5.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
@@ -23,9 +24,18 @@
   <ItemGroup>
     <ProjectReference Include="..\CitiesRegional.csproj" />
   </ItemGroup>
+  
+  <PropertyGroup>
+      <UseGameLibs Condition="'$(CS2_INSTALL)' == '' OR !Exists('$(CS2_INSTALL)')">false</UseGameLibs>
+      <UseGameLibs Condition="'$(CS2_INSTALL)' != '' AND Exists('$(CS2_INSTALL)')">true</UseGameLibs>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(UseGameLibs)' == 'false'">
+     <Compile Remove="MockBridgeSystem.cs" />
+  </ItemGroup>
 
   <!-- Reference game DLLs for testing (same as main project) -->
-  <ItemGroup Condition="Exists('$(CS2_INSTALL)')">
+  <ItemGroup Condition="'$(UseGameLibs)' == 'true'">
     <!-- BepInEx runtime dependency (needed because CitiesRegional.Logging references BepInEx.Logging types) -->
     <Reference Include="BepInEx">
       <HintPath>$(CS2_INSTALL)\BepInEx\core\BepInEx.dll</HintPath>
