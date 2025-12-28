@@ -1,24 +1,19 @@
 <!--
-  Directory.Build.props - Shared configuration for all projects in D:\mods
+  Directory.Build.props - Shared configuration for all projects
   
   This file configures:
-  1. NuGet packages to store on D: drive (saves C: space)
-  2. CS2 game path (update this to your installation)
-  3. BepInEx path for mod deployment
-  4. Build output paths on D: drive
+  1. CS2 game path (update this to your installation)
+  2. BepInEx path for mod deployment
 -->
 <Project>
   
   <!-- ============================================== -->
-  <!-- BUILD OUTPUT ON D: DRIVE                       -->
-  <!-- Must be set BEFORE SDK is imported!            -->
+  <!-- BUILD OUTPUT                                   -->
   <!-- ============================================== -->
   
   <PropertyGroup>
-    <!-- Use standard obj folder for intermediates (avoids permission/lock issues with custom paths) -->
     <BaseIntermediateOutputPath>$(MSBuildProjectDirectory)\obj\</BaseIntermediateOutputPath>
     <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
-    <!-- Exclude non-standard intermediate folders if they exist from previous sessions -->
     <DefaultItemExcludes>$(DefaultItemExcludes);$(MSBuildProjectDirectory)\obj_build\**;$(MSBuildProjectDirectory)\obj_temp\**</DefaultItemExcludes>
   </PropertyGroup>
   
@@ -29,25 +24,12 @@
   <PropertyGroup>
     <!-- 
       Set your Cities: Skylines 2 installation path here.
-      Common locations:
-      - D:\SteamLibrary\steamapps\common\Cities Skylines II
-      - C:\Program Files (x86)\Steam\steamapps\common\Cities Skylines II
-      - D:\Games\Cities Skylines II
+      In Cloud environment, this likely doesn't exist, which is handled by project files.
     -->
-    <CS2_INSTALL>D:\mods\CS2\Cities.Skylines.II.v1.5.3f1\game</CS2_INSTALL>
+    <CS2_INSTALL Condition="'$(CS2_INSTALL)' == ''">C:\Program Files (x86)\Steam\steamapps\common\Cities Skylines II</CS2_INSTALL>
     
     <!-- BepInEx plugins folder (inside CS2 installation) -->
     <BEPINEX_PLUGINS>$(CS2_INSTALL)\BepInEx\plugins</BEPINEX_PLUGINS>
-  </PropertyGroup>
-  
-  <!-- ============================================== -->
-  <!-- NUGET PACKAGE CACHE ON D: DRIVE               -->
-  <!-- ============================================== -->
-  
-  <PropertyGroup>
-    <!-- Store NuGet packages on D: drive to save C: space -->
-    <RestorePackagesPath>D:\mods\.nuget\packages</RestorePackagesPath>
-    <NuGetPackageRoot>D:\mods\.nuget\packages</NuGetPackageRoot>
   </PropertyGroup>
   
   <!-- ============================================== -->
@@ -55,7 +37,6 @@
   <!-- ============================================== -->
   
   <PropertyGroup>
-    <!-- Output to D: drive -->
     <BaseOutputPath>$(MSBuildProjectDirectory)\bin\</BaseOutputPath>
   </PropertyGroup>
   

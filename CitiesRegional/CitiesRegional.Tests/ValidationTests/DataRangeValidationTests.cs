@@ -1,7 +1,5 @@
 using Xunit;
 using CitiesRegional.Models;
-using CitiesRegional.Systems;
-
 namespace CitiesRegional.Tests.ValidationTests;
 
 /// <summary>
