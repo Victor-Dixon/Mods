@@ -47,6 +47,8 @@ public class CitiesRegionalPlugin : BaseUnityPlugin
 
         Logging.LogInfo($"Cities Regional v{PluginInfo.PLUGIN_VERSION} loading...");
         Debug.Log("[CitiesRegional] Plugin Awake() called");
+        // Prevent destruction on scene load so the plugin persists
+        DontDestroyOnLoad(this.gameObject);
 
         // Apply Harmony patches manually for better control
         try
@@ -75,7 +77,7 @@ public class CitiesRegionalPlugin : BaseUnityPlugin
             // Initialize UI helper
             _ui = new CitiesRegional.UI.CitiesRegionalUI();
             _ui.Initialize(_regionalManager);
-            
+
             // Initialize IMGUI panel (F9 to toggle)
             _imgui = gameObject.AddComponent<CitiesRegionalIMGUI>();
             _imgui.Initialize(_regionalManager);
