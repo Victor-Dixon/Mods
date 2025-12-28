@@ -1,3 +1,10 @@
+// DISABLED: Gooee is deprecated and incompatible with CS2 v1.5.3+
+// This file is kept for reference but the class is commented out.
+// 
+// The core CitiesRegional mod works without this UI plugin.
+// UI will be implemented using CS2's native binding system or IMGUI.
+
+/*
 using System;
 using BepInEx;
 using CitiesRegional.Services;
@@ -9,9 +16,6 @@ using Gooee;
 
 namespace CitiesRegional.UI;
 
-/// <summary>
-/// Gooee plugin for CitiesRegional mod
-/// </summary>
 [BepInPlugin(PluginInfo.PLUGIN_GUID + ".UI", PluginInfo.PLUGIN_NAME + " UI", PluginInfo.PLUGIN_VERSION)]
 [BepInDependency("Gooee", BepInDependency.DependencyFlags.HardDependency)]
 public class CitiesRegionalGooeePlugin : Gooee.Plugin
@@ -27,7 +31,6 @@ public class CitiesRegionalGooeePlugin : Gooee.Plugin
     {
         CitiesRegional.Logging.LogInfo("CitiesRegional GooeePlugin Awake() called");
         
-        // Get RegionalManager from main plugin
         var mainPlugin = CitiesRegional.CitiesRegionalPlugin.Instance;
         if (mainPlugin != null)
         {
@@ -35,14 +38,12 @@ public class CitiesRegionalGooeePlugin : Gooee.Plugin
             _ui = new CitiesRegionalUI();
             _ui.Initialize(_regionalManager);
             
-            // Initialize panel structures
             _tradeDashboard = new TradeDashboardPanel();
             _tradeDashboard.Initialize(_regionalManager, _ui);
             
             _regionPanel = new RegionPanel();
             _regionPanel.Initialize(_regionalManager, _ui);
             
-            // Initialize React components (ready for Gooee integration)
             _tradeDashboardComponent = new TradeDashboardComponent();
             _tradeDashboardComponent.Initialize(_tradeDashboard);
             
@@ -50,12 +51,7 @@ public class CitiesRegionalGooeePlugin : Gooee.Plugin
             _regionPanelComponent.Initialize(_regionPanel);
             
             CitiesRegional.Logging.LogInfo("RegionalManager connected to GooeePlugin");
-            CitiesRegional.Logging.LogInfo("Panel structures initialized (TradeDashboard, RegionPanel)");
-            CitiesRegional.Logging.LogInfo("React components initialized (TradeDashboardComponent, RegionPanelComponent)");
-        }
-        else
-        {
-            CitiesRegional.Logging.LogWarn("Main plugin instance not found - GooeePlugin may not function correctly");
         }
     }
 }
+*/

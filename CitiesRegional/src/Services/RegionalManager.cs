@@ -65,6 +65,9 @@ public class RegionalManager : IDisposable
     /// <summary>Last successful sync time</summary>
     public DateTime LastSyncTime => _lastSyncTime;
     
+    /// <summary>Is currently syncing?</summary>
+    public bool IsSyncing => _syncTask != null && !_syncTask.IsCompleted;
+    
     #endregion
     
     #region Region Management
@@ -357,6 +360,22 @@ public class RegionalManager : IDisposable
     {
         if (!_isConnected) return;
         await PerformSync();
+    }
+    
+    /// <summary>
+    /// Force an immediate sync (alias for IMGUI)
+    /// </summary>
+    public async Task ForceSync()
+    {
+        await ForceSyncNow();
+    }
+    
+    /// <summary>
+    /// Get the current region
+    /// </summary>
+    public Region? GetCurrentRegion()
+    {
+        return _currentRegion;
     }
     
     #endregion

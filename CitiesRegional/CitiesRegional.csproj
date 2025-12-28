@@ -76,6 +76,14 @@
       <HintPath>$(CS2_INSTALL)\Cities2_Data\Managed\UnityEngine.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>$(CS2_INSTALL)\Cities2_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>$(CS2_INSTALL)\Cities2_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
     <!-- Gooee UI Framework -->
     <Reference Include="Gooee">
       <HintPath>$(CS2_INSTALL)\BepInEx\plugins\Gooee\Gooee.dll</HintPath>

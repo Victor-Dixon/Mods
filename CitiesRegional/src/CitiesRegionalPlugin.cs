@@ -27,6 +27,7 @@ public class CitiesRegionalPlugin : BaseUnityPlugin
 
     private RegionalManager? _regionalManager;
     private CitiesRegionalUI? _ui;
+    private CitiesRegionalIMGUI? _imgui;
     private Harmony? _harmony;
     private SystemDiscoveryBootstrap? _discovery;
     private bool _isInitialized;
@@ -71,10 +72,14 @@ public class CitiesRegionalPlugin : BaseUnityPlugin
             _regionalManager = new RegionalManager();
             Logging.LogInfo("Regional Manager initialized.");
 
-            // Initialize UI
+            // Initialize UI helper
             _ui = new CitiesRegional.UI.CitiesRegionalUI();
             _ui.Initialize(_regionalManager);
-            Logging.LogInfo("UI initialized (Gooee reference added).");
+            
+            // Initialize IMGUI panel (F9 to toggle)
+            _imgui = gameObject.AddComponent<CitiesRegionalIMGUI>();
+            _imgui.Initialize(_regionalManager);
+            Logging.LogInfo("UI initialized - Press F9 to open panel");
         }
         catch (Exception ex)
         {
