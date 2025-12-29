@@ -59,8 +59,13 @@ public class CloudRegionalSync : IRegionalSync, IDisposable
             Timeout = TimeSpan.FromSeconds(30)
         };
 
-        // Default server URL - can be changed via config
-        _baseUrl = "https://api.citiesregional.com";
+        // Default server URL - can be changed via config/env.
+        // Our in-repo server prototype uses `/api` + `/regions` routes, so default to local dev.
+        var envUrl = Environment.GetEnvironmentVariable("CITIESREGIONAL_BASE_URL");
+        _baseUrl = string.IsNullOrWhiteSpace(envUrl)
+            ? "http://localhost:5000/api"
+            : envUrl.Trim();
+        _baseUrl = _baseUrl.TrimEnd('/');
     }
 
     /// <summary>
