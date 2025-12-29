@@ -22,11 +22,22 @@
   <!-- ============================================== -->
   
   <PropertyGroup>
-    <!-- 
+    <!--
       Set your Cities: Skylines 2 installation path here.
-      In Cloud environment, this likely doesn't exist, which is handled by project files.
+
+      Auto-detect (preferred):
+        - If this repo contains a portable CS2 install at:
+            <repo>\CS2\Cities.Skylines.II.v1.5.3f1\game
+          then use that path.
+
+      Fallback:
+        - Steam default install location.
     -->
-    <CS2_INSTALL Condition="'$(CS2_INSTALL)' == ''">C:\Program Files (x86)\Steam\steamapps\common\Cities Skylines II</CS2_INSTALL>
+    <RepoRoot>$(MSBuildThisFileDirectory)</RepoRoot>
+    <CS2_INSTALL_LOCAL>$(RepoRoot)CS2\Cities.Skylines.II.v1.5.3f1\game</CS2_INSTALL_LOCAL>
+
+    <CS2_INSTALL Condition="'$(CS2_INSTALL)' == '' AND Exists('$(CS2_INSTALL_LOCAL)')">$(CS2_INSTALL_LOCAL)</CS2_INSTALL>
+    <CS2_INSTALL Condition="'$(CS2_INSTALL)' == '' AND !Exists('$(CS2_INSTALL_LOCAL)')">C:\Program Files (x86)\Steam\steamapps\common\Cities Skylines II</CS2_INSTALL>
     
     <!-- BepInEx plugins folder (inside CS2 installation) -->
     <BEPINEX_PLUGINS>$(CS2_INSTALL)\BepInEx\plugins</BEPINEX_PLUGINS>

@@ -106,8 +106,8 @@
       <HintPath>$(CS2_INSTALL)\Cities2_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
-    <!-- Gooee UI Framework -->
-    <Reference Include="Gooee">
+    <!-- Gooee UI Framework (optional) -->
+    <Reference Include="Gooee" Condition="Exists('$(CS2_INSTALL)\BepInEx\plugins\Gooee\Gooee.dll')">
       <HintPath>$(CS2_INSTALL)\BepInEx\plugins\Gooee\Gooee.dll</HintPath>
       <Private>false</Private>
     </Reference>

@@ -20,11 +20,10 @@ class Program
         Console.WriteLine("╚════════════════════════════════════════════════════════════╝");
         Console.WriteLine();
         
-        // Initialize the plugin
-        var plugin = new CitiesRegionalPlugin();
-        plugin.Initialize();
-        
-        Console.WriteLine();
+        // NOTE:
+        // This TestApp runs outside Cities: Skylines 2, so it should NOT instantiate the BepInEx/Unity plugin.
+        // Keep this app focused on model/service logic that can run in a normal .NET process.
+
         Console.WriteLine("Testing Regional Data Models...");
         Console.WriteLine("─────────────────────────────────────────────────────────────");
         
@@ -137,7 +136,7 @@ class Program
         Console.WriteLine();
         
         // Cleanup
-        plugin.Shutdown();
+        // (No plugin lifecycle in TestApp; this is a pure model/service smoke run.)
         
         Console.WriteLine("═════════════════════════════════════════════════════════════");
         Console.WriteLine("✅ All tests passed! The regional system is working.");
