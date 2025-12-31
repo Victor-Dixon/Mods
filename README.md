@@ -170,13 +170,13 @@ dotnet build
 
 ## ❓ What's Next?
 
-Tell me which PRD you want to pursue and I'll help you:
+Choose a path and I can help you drive it end-to-end:
 
-1. **Create the project structure**
-2. **Write the initial Plugin.cs entry point**
-3. **Set up the first Harmony patches**
-4. **Build the first feature**
-5. **Test it in-game**
+1. **Prototype Sync Flow** - Stand up a minimal end-to-end region sync (create/join, push/pull, log payloads).
+2. **Trade & Economy Tuning** - Calibrate resource prices, export caps, and treasury impact for balanced play.
+3. **Connectivity & Capacity** - Implement/visualize regional connections and validate capacity constraints.
+4. **UI/UX Track** - Build the regional dashboard and control panels for settings and status.
+5. **Server & Deployment** - Harden the server API, add persistence, and package a Docker deploy path.
+6. **Multiplayer Expansion** - Explore the shared-city multiplayer PRD path and identify MVP scope cuts.
 
 Let's build something awesome! 🏙️
-

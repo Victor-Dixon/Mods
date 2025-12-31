@@ -33,6 +33,7 @@
   <!-- Exclude game dependent files if no game libs -->
   <ItemGroup Condition="'$(UseGameLibs)' == 'false'">
     <Compile Remove="src\Bootstrap\**" />
+    <Compile Remove="src\Config\**" />
     <Compile Remove="src\Patches\**" />
     <Compile Remove="src\Systems\**" />
     <Compile Remove="src\UI\**" />

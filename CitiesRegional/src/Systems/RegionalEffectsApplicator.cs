@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CitiesRegional.Models;
+using CitiesRegional.Config;
 using Unity.Entities;
 
 namespace CitiesRegional.Services;
@@ -97,7 +98,7 @@ public class RegionalEffectsApplicator
             if (connection == null) continue;
             
             // Calculate commuters based on job/worker balance and connection capacity
-            var maxCommuteTime = 45; // From config
+            var maxCommuteTime = RegionalSettings.Instance.GetMaxCommuteMinutes();
             
             if (connection.TravelTimeMinutes <= maxCommuteTime)
             {

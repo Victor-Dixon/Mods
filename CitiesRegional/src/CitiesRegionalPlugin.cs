@@ -6,6 +6,7 @@ using CitiesRegional.Services;
 using CitiesRegional.Bootstrap;
 using CitiesRegional.Patches;
 using CitiesRegional.UI;
+using CitiesRegional.Config;
 using UnityEngine;
 
 namespace CitiesRegional;
@@ -44,6 +45,7 @@ public class CitiesRegionalPlugin : BaseUnityPlugin
 
         // Initialize unified logging
         Logging.Init(Logger);
+        RegionalSettings.Initialize(Config);
 
         Logging.LogInfo($"Cities Regional v{PluginInfo.PLUGIN_VERSION} loading...");
         Debug.Log("[CitiesRegional] Plugin Awake() called");
