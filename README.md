@@ -1,6 +1,6 @@
 # 🎮 Cities: Skylines 2 Mod Development
 
-Welcome to your CS2 modding workspace! This folder contains Product Requirements Documents (PRDs) for 5 potential mod projects.
+Welcome to my Cities: Skylines 2 modding workspace. I keep the PRDs for each mod concept here along with the CitiesRegional prototype.
 
 ---
 
@@ -170,13 +170,6 @@ dotnet build
 
 ## ❓ What's Next?
 
-Choose a path and I can help you drive it end-to-end:
-
-1. **Prototype Sync Flow** - Stand up a minimal end-to-end region sync (create/join, push/pull, log payloads).
-2. **Trade & Economy Tuning** - Calibrate resource prices, export caps, and treasury impact for balanced play.
-3. **Connectivity & Capacity** - Implement/visualize regional connections and validate capacity constraints.
-4. **UI/UX Track** - Build the regional dashboard and control panels for settings and status.
-5. **Server & Deployment** - Harden the server API, add persistence, and package a Docker deploy path.
-6. **Multiplayer Expansion** - Explore the shared-city multiplayer PRD path and identify MVP scope cuts.
-
-Let's build something awesome! 🏙️
+1. Pick a PRD from the index above that matches the kind of mod you want to build.
+2. Open the matching PRD file and skim the goals, features, and risks.
+3. If you want to work on the existing prototype, jump into `CitiesRegional/README.md` and follow the build steps there.
