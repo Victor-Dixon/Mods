@@ -1,6 +1,6 @@
 # 🎮 Cities: Skylines 2 Mod Development
 
-Welcome to your CS2 modding workspace! This folder contains Product Requirements Documents (PRDs) for 5 potential mod projects.
+Welcome to my Cities: Skylines 2 modding workspace. I keep the PRDs for each mod concept here along with the CitiesRegional prototype.
 
 ---
 
@@ -170,13 +170,6 @@ dotnet build
 
 ## ❓ What's Next?
 
-Tell me which PRD you want to pursue and I'll help you:
-
-1. **Create the project structure**
-2. **Write the initial Plugin.cs entry point**
-3. **Set up the first Harmony patches**
-4. **Build the first feature**
-5. **Test it in-game**
-
-Let's build something awesome! 🏙️
-
+1. Pick a PRD from the index above that matches the kind of mod you want to build.
+2. Open the matching PRD file and skim the goals, features, and risks.
+3. If you want to work on the existing prototype, jump into `CitiesRegional/README.md` and follow the build steps there.
