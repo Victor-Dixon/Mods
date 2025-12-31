@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using CitiesRegional.Config;
 using CitiesRegional.Services;
 
 namespace CitiesRegional.UI;
@@ -19,6 +20,11 @@ public class CitiesRegionalIMGUI : MonoBehaviour
     private string _regionCode = "";
     private string _regionName = "";
     private Vector2 _scrollPosition;
+    private bool _settingsLoaded;
+    private string _cloudServerUrl = "";
+    private string _syncIntervalSeconds = "";
+    private string _maxExportPercentage = "";
+    private string _maxCommuteMinutes = "";
     
     public void Initialize(RegionalManager regionalManager)
     {
@@ -53,7 +59,10 @@ public class CitiesRegionalIMGUI : MonoBehaviour
     private void DrawWindow(int windowId)
     {
         GUILayout.BeginVertical();
-        
+
+        EnsureSettingsFields();
+        _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
+
         // Status section
         GUILayout.Label("━━━ Status ━━━", GUILayout.ExpandWidth(true));
         
@@ -118,10 +127,13 @@ public class CitiesRegionalIMGUI : MonoBehaviour
                 _ = _regionalManager.ForceSync();
             }
         }
-        
+
+        DrawSettingsPanel();
+
         GUILayout.Space(10);
         GUILayout.Label("Press F9 to close", GUI.skin.box);
-        
+
+        GUILayout.EndScrollView();
         GUILayout.EndVertical();
         
         // Make window draggable
@@ -137,6 +149,91 @@ public class CitiesRegionalIMGUI : MonoBehaviour
         result.SetPixels(pix);
         result.Apply();
         return result;
+    }
+
+    private void EnsureSettingsFields()
+    {
+        if (_settingsLoaded)
+        {
+            return;
+        }
+
+        var settings = RegionalSettings.Instance;
+        _cloudServerUrl = settings.CloudServerUrl.Value;
+        _syncIntervalSeconds = settings.SyncIntervalSeconds.Value.ToString();
+        _maxExportPercentage = settings.MaxExportPercentage.Value.ToString();
+        _maxCommuteMinutes = settings.MaxCommuteMinutes.Value.ToString();
+        _settingsLoaded = true;
+    }
+
+    private void DrawSettingsPanel()
+    {
+        GUILayout.Space(10);
+        GUILayout.Label("━━━ Settings (Debug) ━━━");
+
+        var settings = RegionalSettings.Instance;
+
+        var enableP2P = GUILayout.Toggle(settings.EnableP2PMode.Value, "Enable P2P Mode");
+        if (enableP2P != settings.EnableP2PMode.Value)
+        {
+            settings.EnableP2PMode.Value = enableP2P;
+        }
+
+        var autoTrade = GUILayout.Toggle(settings.AutoTradeEnabled.Value, "Auto Trade Enabled");
+        if (autoTrade != settings.AutoTradeEnabled.Value)
+        {
+            settings.AutoTradeEnabled.Value = autoTrade;
+        }
+
+        var enableCommuters = GUILayout.Toggle(settings.EnableCommuters.Value, "Enable Commuters");
+        if (enableCommuters != settings.EnableCommuters.Value)
+        {
+            settings.EnableCommuters.Value = enableCommuters;
+        }
+
+        GUILayout.Space(6);
+        GUILayout.Label("Cloud Server URL");
+        _cloudServerUrl = GUILayout.TextField(_cloudServerUrl);
+        if (GUILayout.Button("Apply Server URL"))
+        {
+            settings.CloudServerUrl.Value = _cloudServerUrl.Trim();
+        }
+
+        GUILayout.Space(6);
+        GUILayout.Label("Sync Interval (seconds)");
+        _syncIntervalSeconds = GUILayout.TextField(_syncIntervalSeconds);
+        if (GUILayout.Button("Apply Sync Interval"))
+        {
+            if (int.TryParse(_syncIntervalSeconds, out var value))
+            {
+                settings.SyncIntervalSeconds.Value = Math.Max(10, value);
+                _syncIntervalSeconds = settings.SyncIntervalSeconds.Value.ToString();
+            }
+        }
+
+        GUILayout.Space(6);
+        GUILayout.Label("Max Export Percentage");
+        _maxExportPercentage = GUILayout.TextField(_maxExportPercentage);
+        if (GUILayout.Button("Apply Max Export %"))
+        {
+            if (int.TryParse(_maxExportPercentage, out var value))
+            {
+                settings.MaxExportPercentage.Value = Math.Max(0, Math.Min(100, value));
+                _maxExportPercentage = settings.MaxExportPercentage.Value.ToString();
+            }
+        }
+
+        GUILayout.Space(6);
+        GUILayout.Label("Max Commute Minutes");
+        _maxCommuteMinutes = GUILayout.TextField(_maxCommuteMinutes);
+        if (GUILayout.Button("Apply Max Commute Minutes"))
+        {
+            if (int.TryParse(_maxCommuteMinutes, out var value))
+            {
+                settings.MaxCommuteMinutes.Value = Math.Max(1, value);
+                _maxCommuteMinutes = settings.MaxCommuteMinutes.Value.ToString();
+            }
+        }
     }
 }
 

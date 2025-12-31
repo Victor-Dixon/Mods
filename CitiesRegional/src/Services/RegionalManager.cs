@@ -43,13 +43,29 @@ public class RegionalManager : IDisposable
     
     public RegionalManager()
     {
-        // Initialize with cloud sync by default
-        _syncService = new CloudRegionalSync();
+        _syncService = CreateSyncService();
         _dataCollector = new CityDataCollector();
         _effectsApplicator = new RegionalEffectsApplicator();
         
         // Subscribe to sync service events
         _syncService.OnEventReceived += HandleRegionalEvent;
+    }
+
+    private static IRegionalSync CreateSyncService()
+    {
+        var settings = RegionalSettings.Instance;
+        if (settings.EnableP2PMode.Value)
+        {
+            CitiesRegional.Logging.LogWarn("P2P mode is enabled but not yet implemented. Falling back to cloud sync.");
+        }
+
+        var cloudSync = new CloudRegionalSync();
+        var serverUrl = settings.CloudServerUrl.Value;
+        if (!string.IsNullOrWhiteSpace(serverUrl))
+        {
+            cloudSync.SetServerUrl(serverUrl);
+        }
+        return cloudSync;
     }
     
     #region Public Properties
