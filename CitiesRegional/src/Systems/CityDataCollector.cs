@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CitiesRegional.Config;
 using CitiesRegional.Models;
 
 namespace CitiesRegional.Services;
@@ -364,8 +365,34 @@ public class CityDataCollector
             Price = 0, // Workers don't have a price, but commute costs apply
             Stockpile = 0
         });
-        
+
+        ApplyMaxExportCap(resources);
         data.Resources = resources;
+    }
+
+    private void ApplyMaxExportCap(List<ResourceData> resources)
+    {
+        if (resources.Count == 0)
+        {
+            return;
+        }
+
+        var settings = RegionalSettings.Instance;
+        var maxExportPercentage = Math.Max(0, Math.Min(100, settings.MaxExportPercentage.Value));
+        if (maxExportPercentage >= 100)
+        {
+            return;
+        }
+
+        var maxExportRatio = maxExportPercentage / 100f;
+        foreach (var resource in resources)
+        {
+            var maxExport = resource.Production * maxExportRatio;
+            if (resource.ExportAvailable > maxExport)
+            {
+                resource.ExportAvailable = maxExport;
+            }
+        }
     }
     
     private void CollectMetricsData(RegionalCityData data)
