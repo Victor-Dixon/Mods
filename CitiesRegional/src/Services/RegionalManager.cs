@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CitiesRegional.Models;
+using CitiesRegional.Config;
 
 namespace CitiesRegional.Services;
 
@@ -176,7 +177,7 @@ public class RegionalManager : IDisposable
     private async Task RunSyncLoop(CancellationToken cancellationToken)
     {
         // Sync interval (2 minutes default)
-        var syncInterval = TimeSpan.FromSeconds(120);
+        var syncInterval = RegionalSettings.Instance.GetSyncInterval();
         int consecutiveFailures = 0;
         const int maxConsecutiveFailures = 5;
         
@@ -287,8 +288,24 @@ public class RegionalManager : IDisposable
             }
             
             // 5. Apply effects to our city
-            _effectsApplicator.ApplyTradeEffects(tradeResult.Flows, _localCityData.CityId);
-            _effectsApplicator.ApplyCommuterEffects(_currentRegion, _localCityData.CityId);
+            var settings = RegionalSettings.Instance;
+            if (settings.AutoTradeEnabled.Value)
+            {
+                _effectsApplicator.ApplyTradeEffects(tradeResult.Flows, _localCityData.CityId);
+            }
+            else
+            {
+                CitiesRegional.Logging.LogDebug("Auto-trade disabled; skipping trade effects.");
+            }
+
+            if (settings.EnableCommuters.Value)
+            {
+                _effectsApplicator.ApplyCommuterEffects(_currentRegion, _localCityData.CityId);
+            }
+            else
+            {
+                CitiesRegional.Logging.LogDebug("Commuters disabled; skipping commuter effects.");
+            }
             
             _lastSyncTime = DateTime.UtcNow;
             OnRegionUpdated?.Invoke(_currentRegion);
